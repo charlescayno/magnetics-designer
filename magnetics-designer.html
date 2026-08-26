@@ -105,7 +105,7 @@
                         <div class="text-center">RMS</div>
                         <div class="text-center">% Fill</div>
                         <div class="text-center">CMA</div>
-                        <div class="text-right">Del</div>
+                        <div class="text-right">Lock / Del</div>
                     </div>
 
                     <!-- Draggable List -->
@@ -131,20 +131,20 @@
                                     </div>
                                 </div>
                                 <!-- Name -->
-                                <div><input type="text" v-model="item.name" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
+                                <div><input type="text" v-model="item.name" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Pins Removed -->
                                 <!-- Turns -->
-                                <div><input type="number" v-model.number="item.turns" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
+                                <div><input type="number" v-model.number="item.turns" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Filar -->
-                                <div><input type="number" v-model.number="item.filar" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
+                                <div><input type="number" v-model.number="item.filar" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Gauge -->
-                                <div><input type="text" v-model="item.gauge" :list="item.wireType ? item.wireType + '-list' : 'AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
+                                <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.wireType + '-list' : 'AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
                                 <!-- Wire Type -->
-                                <div><input type="text" v-model="item.wireType" list="type-list" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
+                                <div><input type="text" v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" list="type-list" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
                                 <!-- Wire OD -->
-                                <div><input type="number" step="0.01" v-model.number="item.wireOD" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
+                                <div><input type="number" step="0.01" v-model.number="item.wireOD" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- RMS -->
-                                <div><input type="number" step="0.01" v-model.number="item.rms" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
+                                <div><input type="number" step="0.01" v-model.number="item.rms" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
                                 <!-- Width Fill -->
                                 <div class="text-center text-[11px] font-semibold" :style="{ color: calculatedWindings[index].widthFill > 95 ? '#dc2626' : item.color }">
                                     {{ Math.round(calculatedWindings[index].widthFill) }}%
@@ -163,18 +163,28 @@
                                 </div>
                                 <!-- Tape Thickness Input (Aligned with OD) -->
                                 <div style="grid-column: span 1;">
-                                    <input type="number" step="0.01" v-model.number="item.thickness" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" title="Tape Thickness (mm)">
+                                    <input type="number" step="0.01" v-model.number="item.thickness" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" title="Tape Thickness (mm)">
                                 </div>
                                 <!-- Empty Fill Column -->
                                 <div style="grid-column: span 2;"></div>
                             </template>
 
-                            <!-- Delete -->
-                            <button @click="remove(index)" class="flex justify-center items-center w-full h-full text-gray-400 hover:text-red-500 transition cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
+                            <!-- Lock / Delete -->
+                            <div class="flex justify-end gap-1 items-center">
+                                <button @click="item.locked = !item.locked" class="text-gray-400 hover:text-gray-600 transition cursor-pointer">
+                                    <svg v-if="item.locked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                    </svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                                <button @click="!item.locked && remove(index)" class="flex justify-center items-center w-full h-full text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="mt-4 text-xs text-gray-500">
@@ -568,18 +578,18 @@
                 // Initialize default states
                 let initialBobbin = { width: 20.8, depth: 7.05, mlt: 65.0 };
                 let initialWindings = [
-                    { id: 13, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
+                    { id: 13, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 12, type: 'winding', wd: 'WD2', name: 'Sec (1T)', turns: 1, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#3b82f6', startPin: '--', endPin: '12' },
                     { id: 11, type: 'winding', wd: 'WD3', name: 'Sec (1T)', turns: 1, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#10b981', startPin: '--', endPin: '9' },
-                    { id: 10, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
+                    { id: 10, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 9, type: 'winding', wd: 'WD6', name: 'Shield', turns: 8, filar: 3, layers: 1, gauge: '25', wireType: 'AWG', wireOD: 0.505, rms: 0.01, color: '#94a3b8', startPin: '5', endPin: 'NC' },
                     { id: 8, type: 'winding', wd: 'WD5', name: 'Pri Bias', turns: 3, filar: 3, layers: 1, gauge: '25', wireType: 'AWG', wireOD: 0.505, rms: 0.1, color: '#f97316', startPin: '6', endPin: '5' },
-                    { id: 7, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
+                    { id: 7, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 6, type: 'winding', wd: 'WD4', name: 'Pri 2', turns: 11, filar: 2, layers: 1, gauge: '150/#44', wireType: 'Served Litz', wireOD: 0.838, rms: 3.587, color: '#ef4444', startPin: '--', endPin: '1' },
-                    { id: 5, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
+                    { id: 5, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 4, type: 'winding', wd: 'WD3', name: 'Sec', turns: 5, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#10b981', startPin: '10', endPin: '--' },
                     { id: 3, type: 'winding', wd: 'WD2', name: 'Sec', turns: 5, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#3b82f6', startPin: '7/8', endPin: '--' },
-                    { id: 2, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
+                    { id: 2, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 1, type: 'winding', wd: 'WD1', name: 'Pri 1', turns: 11, filar: 2, layers: 1, gauge: '150/#44', wireType: 'Served Litz', wireOD: 0.838, rms: 3.587, color: '#ef4444', startPin: '4', endPin: '--' }
                 ];
 
@@ -887,14 +897,14 @@
                     windings.value.unshift({ 
                         id: Date.now(), type: 'winding', wd: 'WD', name: 'New Winding', 
                         turns: maxTurns, filar: 1, layers: 1, gauge: defaultGauge, wireType: defaultType, wireOD: defaultOD, color: nextColor(),
-                        startPin: '', endPin: '', interleaveNext: false
+                        startPin: '', endPin: '', interleaveNext: false, locked: false
                     });
                 };
                 
                 const addTape = () => {
                     windings.value.unshift({ 
                         id: Date.now(), type: 'tape', name: 'Tape', 
-                        thickness: 0.05, color: '#eab308' 
+                        thickness: 0.05, color: '#eab308', locked: false 
                     });
                 };
 
