@@ -7,9 +7,45 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<style>
+    .color-input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: transparent;
+        border: none;
+        width: 14px;
+        height: 14px;
+        padding: 0;
+        cursor: pointer;
+    }
+    .color-input::-webkit-color-swatch {
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+    }
+    .color-input::-moz-color-swatch {
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+    }
+</style>
 </head>
 <body class="bg-gray-100 text-gray-800 p-4 md:p-8 font-sans min-h-screen">
     <div id="app" class="max-w-[1400px] mx-auto flex flex-col gap-6">
+        <datalist id="presetColors">
+            <option>#ef4444</option> <!-- red -->
+            <option>#3b82f6</option> <!-- blue -->
+            <option>#10b981</option> <!-- green -->
+            <option>#f59e0b</option> <!-- yellow -->
+            <option>#8b5cf6</option> <!-- purple -->
+            <option>#ec4899</option> <!-- pink -->
+            <option>#f97316</option> <!-- orange -->
+            <option>#14b8a6</option> <!-- teal -->
+            <option>#06b6d4</option> <!-- cyan -->
+            <option>#6366f1</option> <!-- indigo -->
+            <option>#64748b</option> <!-- slate -->
+            <option>#78716c</option> <!-- stone -->
+        </datalist>
+
         
         <header class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div class="flex flex-col gap-2">
@@ -87,9 +123,12 @@
                             </div>
 
                             <template v-if="item.type === 'winding'">
-                                <!-- WD -->
-                                <div class="text-center font-bold text-[10px] text-gray-600 self-center">
-                                    {{ calculatedWindings[index].displayWd }}
+                                <!-- WD & Color -->
+                                <div class="flex items-center justify-center gap-1 overflow-hidden">
+                                    <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Winding Color">
+                                    <div class="text-center font-bold text-[10px] text-gray-600 truncate">
+                                        {{ calculatedWindings[index].displayWd }}
+                                    </div>
                                 </div>
                                 <!-- Name -->
                                 <div><input type="text" v-model="item.name" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
@@ -118,7 +157,8 @@
 
                             <template v-else-if="item.type === 'tape'">
                                 <!-- Tape Name -->
-                                <div class="font-medium text-gray-700 pl-2 text-xs" style="grid-column: span 6;">
+                                <div class="flex items-center gap-1 font-medium text-gray-700 pl-2 text-xs" style="grid-column: span 6;">
+                                    <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Tape Color">
                                     {{ item.name }}
                                 </div>
                                 <!-- Tape Thickness Input (Aligned with OD) -->
