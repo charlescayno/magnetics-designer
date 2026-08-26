@@ -697,8 +697,8 @@
                     if (item.wireType) {
                         const wType = item.wireType.toUpperCase();
                         
-                        // Check exact TIW Litz match first for "Served TIW" / "TIW Litz" types
-                        if ((wType.includes('TIW') && wType.includes('LITZ') || wType === 'SERVED TIW') && tiwLitzODMap.value[normalizedGauge] !== undefined) {
+                        // Check exact TIW Litz match first
+                        if ((wType.includes('TIW') && wType.includes('LITZ')) && tiwLitzODMap.value[normalizedGauge] !== undefined) {
                             item.wireOD = Number(tiwLitzODMap.value[normalizedGauge].toFixed(5));
                             return;
                         }
@@ -708,8 +708,21 @@
                             item.wireOD = Number(litzODMap.value[normalizedGauge].toFixed(5));
                             return;
                         }
+
+                        // Check TIW match for single solid TIW
+                        if (wType.includes('TIW') && !wType.includes('LITZ') && tiwODMap.value[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(tiwODMap.value[normalizedGauge].toFixed(3));
+                            return;
+                        }
+                        
+                        // Check AWG match
+                        if (wType.includes('AWG') && awgODMap.value[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(awgODMap.value[normalizedGauge].toFixed(3));
+                            return;
+                        }
                     }
 
+                    // Fallback calculations if not found in db maps
                     const gaugeMatch = normalizedGauge.match(/^(?:(\d+)\/#)?(\d+)(?:AWG)?$/i);
                     if (gaugeMatch) {
                         const strands = gaugeMatch[1] ? parseInt(gaugeMatch[1]) : 1;
