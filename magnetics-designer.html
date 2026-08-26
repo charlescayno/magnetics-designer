@@ -433,7 +433,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, awg) in awgODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ od.toFixed(3) }}</td>
+                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ (od || 0).toFixed(3) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -455,7 +455,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, awg) in tiwODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ od.toFixed(3) }}</td>
+                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ (od || 0).toFixed(3) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -473,11 +473,11 @@
                         <div class="border border-gray-200 rounded text-sm">
                             <table class="w-full text-left">
                                 <thead class="bg-gray-50 sticky top-0">
-                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th><th class="p-2 border-b">CMA</th></tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ od.toFixed(4) }}</td>
+                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ (od || 0).toFixed(4) }}</td><td class="p-2">{{ getGenericCMA(litz) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -495,11 +495,11 @@
                         <div class="border border-gray-200 rounded text-sm">
                             <table class="w-full text-left">
                                 <thead class="bg-gray-50 sticky top-0">
-                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th><th class="p-2 border-b">CMA</th></tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ od.toFixed(5) }}</td>
+                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ (od || 0).toFixed(5) }}</td><td class="p-2">{{ getGenericCMA(litz) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -774,6 +774,20 @@
                 };
 
                 
+                
+                const getGenericCMA = (gaugeString) => {
+                    if (!gaugeString) return '-';
+                    let normalizedGauge = String(gaugeString).replace(/\s+/g, '');
+                    const gaugeMatch = normalizedGauge.match(/^(?:(\d+)\/#)?(\d+)(?:AWG)?$/i);
+                    if (gaugeMatch) {
+                        const strands = gaugeMatch[1] ? parseInt(gaugeMatch[1]) : 1;
+                        const awg = parseInt(gaugeMatch[2]);
+                        const wireCma = Math.pow(5 * Math.pow(92, (36 - awg) / 39), 2) * strands;
+                        return Math.round(wireCma);
+                    }
+                    return '-';
+                };
+
                 const calculateCMA = (item) => {
                     if (!item.gauge || !item.rms) return '-';
                     // Very simple CMA fallback mapping parsing gauge string
@@ -906,7 +920,7 @@
                     verification, calculatedAL,
                     exportJSON, exportCSV,
                     bobbinGridRows, toggleInterleave,
-                    awgOptions, tiwOptions, litzOptions, updateOD, calculateCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap
+                    awgOptions, tiwOptions, litzOptions, updateOD, calculateCMA, getGenericCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap
                 };
             }
         }).mount('#app');
