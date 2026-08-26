@@ -376,18 +376,13 @@
     </div>
 
     <script>
-        const { createApp, ref, computed, onMounted } = Vue;
+        const { createApp, ref, computed, onMounted, watch } = Vue;
 
         createApp({
             setup() {
-                const bobbin = ref({ width: 20.8, depth: 7.05, mlt: 65.0 });
-                
-                const colors = ['#ef4444', '#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#94a3b8'];
-                let colorIdx = 0;
-                const nextColor = () => colors[colorIdx++ % colors.length];
-
-                // Pre-loaded with DER-1113 PQ3535 V5 stack (Outer layer first, Inner layer last)
-                const windings = ref([
+                // Initialize default states
+                let initialBobbin = { width: 20.8, depth: 7.05, mlt: 65.0 };
+                let initialWindings = [
                     { id: 13, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
                     { id: 12, type: 'winding', wd: 'WD2', name: 'Sec (1T)', turns: 1, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#3b82f6', startPin: '--', endPin: '12' },
                     { id: 11, type: 'winding', wd: 'WD3', name: 'Sec (1T)', turns: 1, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#10b981', startPin: '--', endPin: '9' },
@@ -401,10 +396,32 @@
                     { id: 3, type: 'winding', wd: 'WD2', name: 'Sec', turns: 5, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#3b82f6', startPin: '7/8', endPin: '--' },
                     { id: 2, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308' },
                     { id: 1, type: 'winding', wd: 'WD1', name: 'Pri 1', turns: 11, filar: 2, layers: 1, gauge: '150/#44', wireType: 'Served Litz', wireOD: 0.838, rms: 3.587, color: '#ef4444', startPin: '4', endPin: '--' }
-                ]);
+                ];
+
+                // Load from localStorage if available
+                const savedConfig = localStorage.getItem('magneticsDesignerConfig');
+                let savedVerification = null;
+                if (savedConfig) {
+                    try {
+                        const parsed = JSON.parse(savedConfig);
+                        if (parsed.bobbin) initialBobbin = parsed.bobbin;
+                        if (parsed.windings) initialWindings = parsed.windings;
+                        if (parsed.verification) savedVerification = parsed.verification;
+                    } catch (e) {
+                        console.error("Failed to load saved config", e);
+                    }
+                }
+
+                const bobbin = ref(initialBobbin);
+                
+                const colors = ['#ef4444', '#3b82f6', '#10b981', '#f97316', '#8b5cf6', '#94a3b8'];
+                let colorIdx = 0;
+                const nextColor = () => colors[colorIdx++ % colors.length];
+
+                const windings = ref(initialWindings);
 
                 // Electrical Verification State
-                const verification = ref({
+                const verification = ref(savedVerification || {
                     Lp: 135.5,
                     leakage: 2.07,
                     Np: 22,
@@ -419,6 +436,15 @@
                     if (!verification.value.Np) return 0;
                     return (verification.value.Lp / (verification.value.Np * verification.value.Np)) * 1000;
                 });
+
+                // Save to localStorage automatically on any change
+                watch([bobbin, windings, verification], () => {
+                    localStorage.setItem('magneticsDesignerConfig', JSON.stringify({
+                        bobbin: bobbin.value,
+                        windings: windings.value,
+                        verification: verification.value
+                    }));
+                }, { deep: true });
 
                 // Helper to calculate AWG circular mils (standard formula)
                 const getAwgCma = (awg) => {
