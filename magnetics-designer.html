@@ -98,9 +98,9 @@
                                 <!-- Filar -->
                                 <div><input type="number" v-model.number="item.filar" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Gauge -->
-                                <div><input type="text" v-model="item.gauge" :list="item.wireType ? item.wireType + '-list' : 'AWG-list'" @change="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
+                                <div><input type="text" v-model="item.gauge" :list="item.wireType ? item.wireType + '-list' : 'AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
                                 <!-- Wire Type -->
-                                <div><input type="text" v-model="item.wireType" list="type-list" @change="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
+                                <div><input type="text" v-model="item.wireType" list="type-list" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
                                 <!-- Wire OD -->
                                 <div><input type="number" step="0.01" v-model.number="item.wireOD" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Width Fill -->
