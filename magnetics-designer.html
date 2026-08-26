@@ -992,10 +992,10 @@
                 
                 const isGaugeUnder95Fill = (item, gauge, wireType) => {
                     let od = 0;
-                    if (wireType === 'AWG') od = awgODMap.value[gauge];
-                    else if (wireType === 'TIW' || wireType === 'Served TIW') od = tiwODMap.value[gauge];
-                    else if (wireType === 'Litz' || wireType === 'Served Litz') od = litzODMap.value[gauge];
-                    else if (wireType === 'TIW Litz' || wireType === 'Served TIW Litz') od = tiwLitzODMap.value[gauge];
+                    if (wireType === 'AWG') od = awgODMap[gauge];
+                    else if (wireType === 'TIW' || wireType === 'Served TIW') od = tiwODMap[gauge];
+                    else if (wireType === 'Litz' || wireType === 'Served Litz') od = litzODMap[gauge];
+                    else if (wireType === 'TIW Litz' || wireType === 'Served TIW Litz') od = tiwLitzODMap[gauge];
                     
                     if (!od || !bobbin.value.width) return false;
                     let widthUsed = (item.turns * item.filar * od);
