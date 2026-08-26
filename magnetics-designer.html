@@ -541,9 +541,27 @@
                     42: 0.076
                 };
 
+                const litzODMap = {
+                    '15/#38': 0.5588, '30/#40': 0.6096, '75/#44': 0.6096, '20/#38': 0.635, 
+                    '25/#38': 0.7112, '40/#40': 0.7112, '100/#44': 0.7112, '75/#42': 0.762, 
+                    '50/#40': 0.7874, '150/#44': 0.8382, '40/#38': 0.889, '100/#42': 0.889, 
+                    '175/#44': 0.9144, '125/#42': 0.9652, '150/#42': 1.0668, '40/#36': 1.0922, 
+                    '60/#38': 1.0922, '125/#40': 1.1938
+                };
+
                 const updateOD = (item) => {
                     if (!item.gauge) return;
-                    const gaugeMatch = String(item.gauge).match(/^(?:(\d+)\s*\/\s*#)?\s*(\d+)\s*(?:AWG)?$/i);
+                    
+                    // Normalize the gauge string to easily lookup in litzODMap
+                    let normalizedGauge = String(item.gauge).replace(/\s+/g, '');
+                    
+                    // Check exact Litz match first for "Served Litz" types
+                    if (item.wireType && item.wireType.toUpperCase().includes('LITZ') && litzODMap[normalizedGauge] !== undefined) {
+                        item.wireOD = Number(litzODMap[normalizedGauge].toFixed(3));
+                        return;
+                    }
+
+                    const gaugeMatch = normalizedGauge.match(/^(?:(\d+)\/#)?(\d+)(?:AWG)?$/i);
                     if (gaugeMatch) {
                         const strands = gaugeMatch[1] ? parseInt(gaugeMatch[1]) : 1;
                         const awg = parseInt(gaugeMatch[2]);
@@ -569,7 +587,7 @@
                         if (strands === 1) {
                             item.wireOD = Number(strandInsulatedOD.toFixed(3));
                         } else {
-                            // Litz estimation
+                            // Litz math estimation fallback for custom bundles not in the table
                             const litzOD = 1.15 * Math.sqrt(strands) * strandInsulatedOD;
                             item.wireOD = Number(litzOD.toFixed(3));
                         }
