@@ -385,19 +385,19 @@
         
         <!-- Datalists for inputs -->
         <datalist id="AWG-list">
-            <option v-for="awg in awgOptions" :key="awg" :value="awg"></option>
+            <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ awgODMap[awg] ? awgODMap[awg] + ' mm' : '' }}</option>
         </datalist>
         <datalist id="TIW-list">
-            <option v-for="awg in tiwOptions" :key="awg" :value="awg"></option>
+            <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '' }}</option>
         </datalist>
         <datalist id="Served TIW-list">
-            <option v-for="awg in tiwOptions" :key="awg" :value="awg"></option>
+            <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '' }}</option>
         </datalist>
         <datalist id="Litz-list">
-            <option v-for="litz in litzOptions" :key="litz" :value="litz"></option>
+            <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ litzODMap[litz] ? litzODMap[litz] + ' mm' : '' }}</option>
         </datalist>
         <datalist id="Served Litz-list">
-            <option v-for="litz in litzOptions" :key="litz" :value="litz"></option>
+            <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ litzODMap[litz] ? litzODMap[litz] + ' mm' : '' }}</option>
         </datalist>
 
         <datalist id="type-list">
@@ -406,6 +406,7 @@
             <option value="Served TIW"></option>
             <option value="Litz"></option>
             <option value="Served Litz"></option>
+            <option value="TIW Litz"></option>
         </datalist>
 
     </div>
