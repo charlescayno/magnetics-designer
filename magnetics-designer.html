@@ -116,7 +116,7 @@
                     </div>
                     
                     <!-- Table Headers -->
-                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px 1fr 2.5fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 24px;">
+                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px minmax(0, 1.5fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px;">
                         <div></div>
                         <div class="uppercase">WD</div>
                         <div class="uppercase">Description</div>
@@ -128,7 +128,7 @@
                         <div class="text-center uppercase">RMS</div>
                         <div class="text-center uppercase">% Fill</div>
                         <div class="text-center uppercase">CMA</div>
-                        <div class="text-right uppercase">Lock / Del</div>
+                        <div class="text-right uppercase flex flex-col items-end"><span>Lock/</span><span>Del</span></div>
                     </div>
 
                     <!-- Draggable List -->
@@ -136,7 +136,7 @@
                         <div v-for="(item, index) in windings" :key="item.id" 
                              class="grid gap-1 items-center bg-white border-b border-gray-200 py-0 px-1 transition group hover:bg-gray-50"
                              :class="{'border-l-4': true}"
-                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px 1fr 2.5fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 24px' }">
+                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px minmax(0, 1.5fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px' }">
                             
                             <!-- Drag Handle -->
                             <div class="cursor-grab text-gray-400 hover:text-gray-600 flex justify-center drag-handle">
@@ -147,14 +147,14 @@
 
                             <template v-if="item.type === 'winding'">
                                 <!-- WD & Color -->
-                                <div class="flex items-center justify-center gap-1 overflow-hidden">
+                                <div class="flex items-center justify-start gap-1 overflow-hidden min-w-0">
                                     <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Winding Color">
                                     <div class="text-center font-bold text-[10px] text-gray-600 truncate">
                                         {{ calculatedWindings[index].displayWd }}
                                     </div>
                                 </div>
                                 <!-- Name -->
-                                <div><input type="text" v-model="item.name" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
+                                <div class="min-w-0"><input type="text" v-model="item.name" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Pins Removed -->
                                 <!-- Turns -->
                                 <div><input type="number" v-model.number="item.turns" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
@@ -189,7 +189,7 @@
                                     <input type="number" step="0.01" v-model.number="item.thickness" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" title="Tape Thickness (mm)">
                                 </div>
                                 <!-- Empty Fill Column -->
-                                <div style="grid-column: span 2;"></div>
+                                <div style="grid-column: span 3;"></div>
                             </template>
 
                             <!-- Lock / Delete -->
