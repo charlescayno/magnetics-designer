@@ -27,6 +27,29 @@
         border-radius: 3px;
         border: 1px solid #d1d5db;
     }
+
+<style>
+    .excel-table th, .excel-table td {
+        border: 1px solid #d1d5db; /* Tailwind gray-300 */
+        padding: 0.375rem 0.75rem; /* Tailwind p-1.5 px-3 */
+        text-align: center;
+        vertical-align: middle;
+    }
+    .excel-table th {
+        font-weight: 700;
+        background-color: #f9fafb; /* Tailwind gray-50 */
+    }
+    .excel-table tbody tr {
+        background-color: #ffffff;
+    }
+    .excel-table tbody tr:nth-child(even) {
+        background-color: #f9fafb;
+    }
+    .excel-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+</style>
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800 p-4 md:p-8 font-sans min-h-screen">
@@ -421,13 +444,22 @@
                 <div class="text-xs text-gray-500">Available drop down options and OD references</div>
             </div>
             
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="p-0">
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 overflow-x-auto">
+                    <button @click="activeDbTab = 'AWG'" :class="activeDbTab === 'AWG' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Solid AWG</button>
+                    <button @click="activeDbTab = 'TIW'" :class="activeDbTab === 'TIW' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Solid TIW</button>
+                    <button @click="activeDbTab = 'Litz'" :class="activeDbTab === 'Litz' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Served Litz Wire</button>
+                    <button @click="activeDbTab = 'TIWLitz'" :class="activeDbTab === 'TIWLitz' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Served TIW Litz Wire</button>
+                </div>
+                
+                <div class="p-6">
+                    <div v-show="activeDbTab === 'AWG'">
                     <!-- AWG -->
                     <div>
                         <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">AWG</h3>
                         <div class="border border-gray-200 rounded text-sm">
-                            <table class="w-full text-left">
+                            <table class="excel-table">
                                 <thead class="bg-gray-50 sticky top-0">
                                     <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
                                 </thead>
@@ -445,11 +477,11 @@
                         </div>
                     </div>
 
-                    <!-- TIW -->
-                    <div>
+                    </div>
+                    <div v-show="activeDbTab === 'TIW'">
                         <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">TIW / Served TIW</h3>
                         <div class="border border-gray-200 rounded text-sm">
-                            <table class="w-full text-left">
+                            <table class="excel-table">
                                 <thead class="bg-gray-50 sticky top-0">
                                     <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
                                 </thead>
@@ -467,17 +499,29 @@
                         </div>
                     </div>
 
-                    <!-- Litz -->
-                    <div>
+                    </div>
+                    <div v-show="activeDbTab === 'Litz'">
                         <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served Litz</h3>
                         <div class="border border-gray-200 rounded text-sm">
-                            <table class="w-full text-left">
+                            <table class="excel-table">
                                 <thead class="bg-gray-50 sticky top-0">
-                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th><th class="p-2 border-b">CMA</th></tr>
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Number of<br>Strands</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Nearest AWG<br>Equiv.<br>(Cir Mils)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ (od || 0).toFixed(4) }}</td><td class="p-2">{{ getGenericCMA(litz) }}</td>
+                                    <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(4) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -489,17 +533,29 @@
                         </div>
                     </div>
 
-                    <!-- TIW Litz -->
-                    <div>
+                    </div>
+                    <div v-show="activeDbTab === 'TIWLitz'">
                         <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served TIW Litz</h3>
                         <div class="border border-gray-200 rounded text-sm">
-                            <table class="w-full text-left">
+                            <table class="excel-table">
                                 <thead class="bg-gray-50 sticky top-0">
-                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th><th class="p-2 border-b">CMA</th></tr>
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Number of<br>Strands</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Nearest AWG<br>Equiv.<br>(Cir Mils)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
-                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ (od || 0).toFixed(5) }}</td><td class="p-2">{{ getGenericCMA(litz) }}</td>
+                                    <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(5) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
