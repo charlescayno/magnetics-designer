@@ -302,7 +302,7 @@
                                     {{ item.filar }}
                                 </div>
                                 <div class="col-span-3 text-center text-xs font-bold text-blue-700">
-                                    <span v-if="bobbin.mlt">{{ ((item.turns * item.filar * bobbin.mlt) / 1000).toFixed(2) }}</span>
+                                    <span v-if="bobbin.mlt" :title="'Layer MLT: ' + item.layerMLT.toFixed(2) + ' mm'">{{ ((item.turns * item.filar * item.layerMLT) / 1000).toFixed(2) }}</span>
                                     <span v-else class="text-gray-400 font-normal">Set MLT</span>
                                 </div>
                             </div>
