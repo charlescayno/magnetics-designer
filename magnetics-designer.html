@@ -179,7 +179,7 @@
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                                     </svg>
                                 </button>
-                                <button @click="!item.locked && remove(index)" class="flex justify-center items-center w-full h-full text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
+                                <button @click="!item.locked && removeLayer(index)" class="flex justify-center items-center w-full h-full text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -242,8 +242,8 @@
                                  }">
                                 
                                 <div v-if="layer.type === 'winding'" class="absolute inset-0 flex items-center justify-between pointer-events-none opacity-40 overflow-hidden">
-                                    <div v-for="n in Math.floor(Math.min(layer.turns * layer.filar, 100))" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
-                                         :style="{ width: (100 / Math.floor(Math.min(layer.turns * layer.filar, 100))) + '%', aspectRatio: '1 / 1' }">
+                                    <div v-for="n in (Math.floor(Math.min((layer.turns || 0) * (layer.filar || 1), 100)) || 0)" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
+                                         :style="{ width: (100 / (Math.floor(Math.min((layer.turns || 0) * (layer.filar || 1), 100)) || 1)) + '%', aspectRatio: '1 / 1' }">
                                     </div>
                                 </div>
                                 <span v-if="layer.type === 'winding' && (layer.sharedThickness / bobbin.depth) * 100 > 3" 
@@ -302,7 +302,7 @@
                                     {{ item.filar }}
                                 </div>
                                 <div class="col-span-3 text-center text-xs font-bold text-blue-700">
-                                    <span v-if="bobbin.mlt" :title="'Layer MLT: ' + item.layerMLT.toFixed(2) + ' mm'">{{ ((item.turns * item.filar * item.layerMLT) / 1000).toFixed(2) }}</span>
+                                    <span v-if="bobbin.mlt" :title="'Layer MLT: ' + (item.layerMLT || 0).toFixed(2) + ' mm'">{{ ((item.turns * item.filar * item.layerMLT) / 1000).toFixed(2) }}</span>
                                     <span v-else class="text-gray-400 font-normal">Set MLT</span>
                                 </div>
                             </div>
