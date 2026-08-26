@@ -375,6 +375,110 @@
 
     </div>
 
+    
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
+            <div class="bg-slate-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    Wire Database
+                </h2>
+                <div class="text-xs text-gray-500">Available drop down options and OD references</div>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- AWG -->
+                    <div>
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">AWG</h3>
+                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded text-sm">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, awg) in awgODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50">
+                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ od.toFixed(3) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="number" id="newAwgG" placeholder="AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newAwgOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="awgODMap[document.getElementById('newAwgG').value] = parseFloat(document.getElementById('newAwgOD').value); document.getElementById('newAwgG').value=''; document.getElementById('newAwgOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- TIW -->
+                    <div>
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">TIW / Served TIW</h3>
+                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded text-sm">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, awg) in tiwODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50">
+                                        <td class="p-2">{{ awg }}</td><td class="p-2">{{ od.toFixed(3) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="number" id="newTiwG" placeholder="AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newTiwOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="tiwODMap[document.getElementById('newTiwG').value] = parseFloat(document.getElementById('newTiwOD').value); document.getElementById('newTiwG').value=''; document.getElementById('newTiwOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Litz -->
+                    <div>
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served Litz</h3>
+                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded text-sm">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
+                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ od.toFixed(4) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="text" id="newLitzG" placeholder="Strands/#AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newLitzOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="litzODMap[document.getElementById('newLitzG').value] = parseFloat(document.getElementById('newLitzOD').value); document.getElementById('newLitzG').value=''; document.getElementById('newLitzOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- TIW Litz -->
+                    <div>
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served TIW Litz</h3>
+                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded text-sm">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr><th class="p-2 border-b">Gauge</th><th class="p-2 border-b">OD (mm)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50">
+                                        <td class="p-2">{{ litz }}</td><td class="p-2">{{ od.toFixed(5) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="text" id="newTiwLitzG" placeholder="Strands/#AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newTiwLitzOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="tiwLitzODMap[document.getElementById('newTiwLitzG').value] = parseFloat(document.getElementById('newTiwLitzOD').value); document.getElementById('newTiwLitzG').value=''; document.getElementById('newTiwLitzOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     <script>
         const { createApp, ref, computed, onMounted, watch } = Vue;
 
@@ -563,14 +667,14 @@
                         const wType = item.wireType.toUpperCase();
                         
                         // Check exact TIW Litz match first for "Served TIW" / "TIW Litz" types
-                        if ((wType.includes('TIW') && wType.includes('LITZ') || wType === 'SERVED TIW') && tiwLitzODMap[normalizedGauge] !== undefined) {
-                            item.wireOD = Number(tiwLitzODMap[normalizedGauge].toFixed(5));
+                        if ((wType.includes('TIW') && wType.includes('LITZ') || wType === 'SERVED TIW') && tiwLitzODMap.value[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(tiwLitzODMap.value[normalizedGauge].toFixed(5));
                             return;
                         }
 
                         // Check exact Litz match for standard "Served Litz" types
-                        if (wType.includes('LITZ') && !wType.includes('TIW') && litzODMap[normalizedGauge] !== undefined) {
-                            item.wireOD = Number(litzODMap[normalizedGauge].toFixed(5));
+                        if (wType.includes('LITZ') && !wType.includes('TIW') && litzODMap.value[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(litzODMap.value[normalizedGauge].toFixed(5));
                             return;
                         }
                     }
@@ -584,15 +688,15 @@
                         const bareOD = 0.127 * Math.pow(92, (36 - awg) / 39);
                         
                         let strandInsulatedOD;
-                        if (awgODMap[awg] !== undefined) {
-                            strandInsulatedOD = awgODMap[awg];
+                        if (awgODMap.value[awg] !== undefined) {
+                            strandInsulatedOD = awgODMap.value[awg];
                         } else {
                             strandInsulatedOD = bareOD * 1.04 + 0.015; // default approx heavy build fallback
                         }
                         
                         if (item.wireType && item.wireType.toUpperCase().includes('TIW')) {
-                            if (tiwODMap[awg] !== undefined) {
-                                strandInsulatedOD = tiwODMap[awg];
+                            if (tiwODMap.value[awg] !== undefined) {
+                                strandInsulatedOD = tiwODMap.value[awg];
                             } else {
                                 strandInsulatedOD = bareOD + 0.2; // fallback
                             }
@@ -717,7 +821,7 @@
                     verification, calculatedAL,
                     exportJSON, exportCSV,
                     bobbinGridRows, toggleInterleave,
-                    awgOptions, tiwOptions, litzOptions, updateOD
+                    awgOptions, tiwOptions, litzOptions, updateOD, awgODMap, tiwODMap, litzODMap, tiwLitzODMap
                 };
             }
         }).mount('#app');
