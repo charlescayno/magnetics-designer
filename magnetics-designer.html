@@ -161,13 +161,33 @@
                                 <!-- Filar -->
                                 <div><input type="number" min="1" v-model.number="item.filar" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Gauge -->
-                                <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.wireType + '-list' : 'AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
+                                <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.id + '-' + item.wireType + '-list' : item.id + '-AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
                                 <!-- Wire Type -->
                                 <div><input type="text" v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" list="type-list" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
                                 <!-- Wire OD -->
                                 <div><input type="number" step="0.01" v-model.number="item.wireOD" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- RMS -->
                                 <div><input type="number" step="0.01" v-model.number="item.rms" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
+
+                                <!-- Datalists specific to this winding -->
+                                <datalist :id="item.id + '-AWG-list'">
+                                    <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'AWG') ? '? ' : '') + (awgODMap[awg] ? awgODMap[awg] + ' mm' : '') }}</option>
+                                </datalist>
+                                <datalist :id="item.id + '-TIW-list'">
+                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
+                                </datalist>
+                                <datalist :id="item.id + '-Served TIW-list'">
+                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'Served TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
+                                </datalist>
+                                <datalist :id="item.id + '-Litz-list'">
+                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
+                                </datalist>
+                                <datalist :id="item.id + '-Served Litz-list'">
+                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Served Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
+                                </datalist>
+                                <datalist :id="item.id + '-TIW Litz-list'">
+                                    <option v-for="litz in tiwLitzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'TIW Litz') ? '? ' : '') + (tiwLitzODMap[litz] ? tiwLitzODMap[litz] + ' mm' : '') }}</option>
+                                </datalist>
                                 <!-- Width Fill -->
                                 <div class="text-center text-[11px] font-semibold" :style="{ color: calculatedWindings[index].sharedWidthFill > 95 ? '#dc2626' : item.color }">
                                     {{ Math.round(calculatedWindings[index].sharedWidthFill) }}%
@@ -407,21 +427,7 @@
         </div>
         
         <!-- Datalists for inputs -->
-        <datalist id="AWG-list">
-            <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ awgODMap[awg] ? awgODMap[awg] + ' mm' : '' }}</option>
-        </datalist>
-        <datalist id="TIW-list">
-            <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '' }}</option>
-        </datalist>
-        <datalist id="Served TIW-list">
-            <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '' }}</option>
-        </datalist>
-        <datalist id="Litz-list">
-            <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ litzODMap[litz] ? litzODMap[litz] + ' mm' : '' }}</option>
-        </datalist>
-        <datalist id="Served Litz-list">
-            <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ litzODMap[litz] ? litzODMap[litz] + ' mm' : '' }}</option>
-        </datalist>
+        
 
         <datalist id="type-list">
             <option value="AWG"></option>
@@ -983,9 +989,22 @@
                     triggerDownload('magnetics_design.csv', csv, 'text/csv');
                 };
 
+                
+                const isGaugeUnder95Fill = (item, gauge, wireType) => {
+                    let od = 0;
+                    if (wireType === 'AWG') od = awgODMap.value[gauge];
+                    else if (wireType === 'TIW' || wireType === 'Served TIW') od = tiwODMap.value[gauge];
+                    else if (wireType === 'Litz' || wireType === 'Served Litz') od = litzODMap.value[gauge];
+                    else if (wireType === 'TIW Litz' || wireType === 'Served TIW Litz') od = tiwLitzODMap.value[gauge];
+                    
+                    if (!od || !bobbin.value.width) return false;
+                    let widthUsed = (item.turns * item.filar * od);
+                    return (widthUsed / bobbin.value.width) * 100 < 95;
+                };
+
                 return { 
                     bobbin, windings, calculatedWindings, totalHeight, depthUse, 
-                    addWinding, addTape, remove,
+                    addWinding, addTape, remove, isGaugeUnder95Fill,
                     verification, calculatedAL,
                     exportJSON, exportCSV,
                     bobbinGridRows, toggleInterleave,
