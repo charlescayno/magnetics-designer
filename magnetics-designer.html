@@ -197,19 +197,19 @@
             <div class="lg:col-span-2 flex flex-col gap-4">
                 
                 <!-- Summary Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-4">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 flex flex-col gap-2">
                     <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Total Height</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ totalHeight.toFixed(3) }} <span class="text-base font-normal text-gray-500">mm</span></p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-xs text-gray-500 font-medium">Total Height:</span>
+                            <span class="text-sm font-bold text-gray-900">{{ totalHeight.toFixed(3) }} <span class="font-normal text-gray-500">mm</span></span>
                         </div>
-                        <div class="text-right">
-                            <p class="text-sm text-gray-500 font-medium">Bobbin Fill</p>
-                            <p class="text-xl font-bold" :class="depthUse > 105 ? 'text-red-600' : 'text-green-600'">{{ depthUse.toFixed(1) }}%</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-xs text-gray-500 font-medium">Bobbin Fill:</span>
+                            <span class="text-sm font-bold" :class="depthUse > 105 ? 'text-red-600' : 'text-green-600'">{{ depthUse.toFixed(1) }}%</span>
                         </div>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="h-2 rounded-full transition-all duration-300" 
+                    <div class="w-full bg-gray-200 rounded-full h-1.5">
+                        <div class="h-1.5 rounded-full transition-all duration-300" 
                              :class="depthUse > 105 ? 'bg-red-500' : 'bg-green-500'" 
                              :style="{width: Math.min(depthUse, 100) + '%'}"></div>
                     </div>
