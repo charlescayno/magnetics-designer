@@ -549,16 +549,30 @@
                     '60/#38': 1.0922, '125/#40': 1.1938
                 };
 
+                const tiwLitzODMap = {
+                    '40/#40': 0.95504, '230/#44': 1.32842, '120/#38': 1.75006
+                };
+
                 const updateOD = (item) => {
                     if (!item.gauge) return;
                     
-                    // Normalize the gauge string to easily lookup in litzODMap
+                    // Normalize the gauge string to easily lookup in maps
                     let normalizedGauge = String(item.gauge).replace(/\s+/g, '');
                     
-                    // Check exact Litz match first for "Served Litz" types
-                    if (item.wireType && item.wireType.toUpperCase().includes('LITZ') && litzODMap[normalizedGauge] !== undefined) {
-                        item.wireOD = Number(litzODMap[normalizedGauge].toFixed(3));
-                        return;
+                    if (item.wireType) {
+                        const wType = item.wireType.toUpperCase();
+                        
+                        // Check exact TIW Litz match first for "Served TIW" / "TIW Litz" types
+                        if ((wType.includes('TIW') && wType.includes('LITZ') || wType === 'SERVED TIW') && tiwLitzODMap[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(tiwLitzODMap[normalizedGauge].toFixed(5));
+                            return;
+                        }
+
+                        // Check exact Litz match for standard "Served Litz" types
+                        if (wType.includes('LITZ') && !wType.includes('TIW') && litzODMap[normalizedGauge] !== undefined) {
+                            item.wireOD = Number(litzODMap[normalizedGauge].toFixed(5));
+                            return;
+                        }
                     }
 
                     const gaugeMatch = normalizedGauge.match(/^(?:(\d+)\/#)?(\d+)(?:AWG)?$/i);
