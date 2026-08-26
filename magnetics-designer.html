@@ -57,12 +57,10 @@
                     </div>
                     
                     <!-- Table Headers -->
-                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 uppercase border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px 1fr 2.5fr 1fr 1fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 24px;">
+                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 uppercase border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px 1fr 2.5fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 24px;">
                         <div></div>
                         <div>WD</div>
                         <div>Description</div>
-                        <div class="text-center leading-tight">Pin<br>Start</div>
-                        <div class="text-center leading-tight">Pin<br>End</div>
                         <div class="text-center">Turns</div>
                         <div class="text-center">Filar</div>
                         <div class="text-center">Gauge</div>
@@ -78,7 +76,7 @@
                         <div v-for="(item, index) in windings" :key="item.id" 
                              class="grid gap-1 items-center bg-white border-b border-gray-200 py-0 px-1 transition group hover:bg-gray-50"
                              :class="{'border-l-4': true}"
-                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px 1fr 2.5fr 1fr 1fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 24px' }">
+                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px 1fr 2.5fr 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 24px' }">
                             
                             <!-- Drag Handle -->
                             <div class="cursor-grab text-gray-400 hover:text-gray-600 flex justify-center drag-handle">
@@ -94,10 +92,7 @@
                                 </div>
                                 <!-- Name -->
                                 <div><input type="text" v-model="item.name" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
-                                <!-- Pin S -->
-                                <div><input type="text" v-model="item.startPin" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="-"></div>
-                                <!-- Pin E -->
-                                <div><input type="text" v-model="item.endPin" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="-"></div>
+                                <!-- Pins Removed -->
                                 <!-- Turns -->
                                 <div><input type="number" v-model.number="item.turns" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Filar -->
@@ -120,7 +115,7 @@
 
                             <template v-else-if="item.type === 'tape'">
                                 <!-- Tape Name -->
-                                <div class="font-medium text-gray-700 pl-2 text-xs" style="grid-column: span 8;">
+                                <div class="font-medium text-gray-700 pl-2 text-xs" style="grid-column: span 6;">
                                     {{ item.name }}
                                 </div>
                                 <!-- Tape Thickness Input (Aligned with OD) -->
