@@ -640,5 +640,23 @@
             }
         }).mount('#app');
     </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMSJKE_K28EfRIc-x3G64uo3hBKhPKTXM",
+            authDomain: "magnetics-designer.firebaseapp.com",
+            projectId: "magnetics-designer",
+            storageBucket: "magnetics-designer.firebasestorage.app",
+            messagingSenderId: "800761436185",
+            appId: "1:800761436185:web:59fedf438fc287f9517288",
+            measurementId: "G-D6XCC5K531"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
 </body>
 </html>
