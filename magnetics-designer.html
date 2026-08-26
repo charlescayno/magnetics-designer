@@ -527,6 +527,12 @@
                 const tiwOptions = Array.from({length: 16}, (_, i) => i + 20); // 20 to 35
                 const litzOptions = ['150/#44', '120/#38', '100/#38', '80/#38', '60/#38', '40/#38', '20/#38'];
                 
+                const tiwODMap = {
+                    18: 1.200, 19: 1.100, 20: 1.000, 21: 0.950, 22: 0.900,
+                    23: 0.800, 24: 0.750, 25: 0.650, 26: 0.600, 27: 0.550,
+                    28: 0.520, 29: 0.480, 30: 0.450, 31: 0.420, 32: 0.400
+                };
+
                 const updateOD = (item) => {
                     if (!item.gauge) return;
                     const gaugeMatch = String(item.gauge).match(/^(?:(\d+)\s*\/\s*#)?\s*(\d+)\s*(?:AWG)?$/i);
@@ -539,7 +545,11 @@
                         let strandInsulatedOD = bareOD * 1.04 + 0.015; // default approx heavy build
                         
                         if (item.wireType && item.wireType.toUpperCase().includes('TIW')) {
-                            strandInsulatedOD = bareOD + 0.2; // TIW is noticeably thicker
+                            if (tiwODMap[awg] !== undefined) {
+                                strandInsulatedOD = tiwODMap[awg];
+                            } else {
+                                strandInsulatedOD = bareOD + 0.2; // fallback
+                            }
                         }
 
                         if (strands === 1) {
