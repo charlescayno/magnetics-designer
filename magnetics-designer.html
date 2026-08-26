@@ -242,8 +242,8 @@
                                  }">
                                 
                                 <div v-if="layer.type === 'winding'" class="absolute inset-0 flex items-center justify-between pointer-events-none opacity-40 overflow-hidden">
-                                    <div v-for="n in Math.floor(Math.min(layer.turns, 100))" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
-                                         :style="{ width: (100 / Math.floor(Math.min(layer.turns, 100))) + '%', aspectRatio: '1 / 1' }">
+                                    <div v-for="n in Math.floor(Math.min(layer.turns * layer.filar, 100))" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
+                                         :style="{ width: (100 / Math.floor(Math.min(layer.turns * layer.filar, 100))) + '%', aspectRatio: '1 / 1' }">
                                     </div>
                                 </div>
                                 <span v-if="layer.type === 'winding' && (layer.sharedThickness / bobbin.depth) * 100 > 3" 
