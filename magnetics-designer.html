@@ -473,10 +473,10 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, awg) in awgODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
-                                        <td class="p-2 border-r border-gray-200">{ awg }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getGenericCMA(awg) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ ((od || 0) / 25.4).toFixed(3) }</td>
-                                        <td class="p-2">{ (od || 0).toFixed(3) }</td>
+                                        <td class="p-2 border-r border-gray-200">{{ awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(awg) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(3) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -503,10 +503,10 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, awg) in tiwODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
-                                        <td class="p-2 border-r border-gray-200">{ awg }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getGenericCMA(awg) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ ((od || 0) / 25.4).toFixed(3) }</td>
-                                        <td class="p-2">{ (od || 0).toFixed(3) }</td>
+                                        <td class="p-2 border-r border-gray-200">{{ awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(awg) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(3) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -535,12 +535,12 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
-                                        <td class="p-2 border-r border-gray-200">{ parseLitz(litz).strands }</td>
-                                        <td class="p-2 border-r border-gray-200">{ parseLitz(litz).awg }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getGenericCMA(litz) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getNearestAWG(getGenericCMA(litz)) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ ((od || 0) / 25.4).toFixed(3) }</td>
-                                        <td class="p-2">{ (od || 0).toFixed(4) }</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(4) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -569,12 +569,12 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
-                                        <td class="p-2 border-r border-gray-200">{ parseLitz(litz).strands }</td>
-                                        <td class="p-2 border-r border-gray-200">{ parseLitz(litz).awg }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getGenericCMA(litz) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ getNearestAWG(getGenericCMA(litz)) }</td>
-                                        <td class="p-2 border-r border-gray-200">{ ((od || 0) / 25.4).toFixed(3) }</td>
-                                        <td class="p-2">{ (od || 0).toFixed(5) }</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(5) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -595,6 +595,7 @@
 
         createApp({
             setup() {
+                const activeDbTab = ref("AWG");
                 // Initialize default states
                 let initialBobbin = { width: 20.8, depth: 7.05, mlt: 65.0 };
                 let initialWindings = [
@@ -779,6 +780,9 @@
                 const tiwLitzODMap = reactive({
                     '40/#40': 0.95504, '230/#44': 1.32842, '120/#38': 1.75006
                 });
+                
+                const tiwLitzOptions = computed(() => Object.keys(tiwLitzODMap));
+
 
                 const updateOD = (item) => {
                     if (!item.gauge) return;
@@ -1002,6 +1006,21 @@
                     return (widthUsed / bobbin.value.width) * 100 < 95;
                 };
 
+                
+                const parseLitz = (gauge) => {
+                    const match = String(gauge).match(/(?:(\d+)\/#)?(\d+)/);
+                    if (match) {
+                        return { strands: match[1] ? parseInt(match[1]) : 1, awg: parseInt(match[2]) };
+                    }
+                    return { strands: 1, awg: 20 };
+                };
+                
+                const getNearestAWG = (cma) => {
+                    if (!cma || cma <= 0) return '-';
+                    // AWG = 50 - 10 * log10(CMA)
+                    let awg = 50 - (10 * Math.log10(cma));
+                    return Math.round(awg);
+                };
                 return { 
                     bobbin, windings, calculatedWindings, totalHeight, depthUse, 
                     addWinding, addTape, remove, isGaugeUnder95Fill,
