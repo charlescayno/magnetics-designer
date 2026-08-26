@@ -533,6 +533,14 @@
                     28: 0.520, 29: 0.480, 30: 0.450, 31: 0.420, 32: 0.400
                 };
 
+                const awgODMap = {
+                    10: 2.670, 11: 2.383, 12: 2.129, 13: 1.902, 14: 1.715, 15: 1.529, 16: 1.369, 17: 1.224,
+                    18: 1.095, 19: 0.980, 20: 0.879, 21: 0.785, 22: 0.701, 23: 0.632, 24: 0.566, 25: 0.505,
+                    26: 0.452, 27: 0.409, 28: 0.366, 29: 0.330, 30: 0.295, 31: 0.267, 32: 0.241, 33: 0.216,
+                    34: 0.191, 35: 0.170, 36: 0.152, 37: 0.140, 38: 0.124, 39: 0.109, 40: 0.097, 41: 0.086,
+                    42: 0.076
+                };
+
                 const updateOD = (item) => {
                     if (!item.gauge) return;
                     const gaugeMatch = String(item.gauge).match(/^(?:(\d+)\s*\/\s*#)?\s*(\d+)\s*(?:AWG)?$/i);
@@ -542,7 +550,13 @@
                         if (awg < 0 || awg > 60) return; // safeguard
                         
                         const bareOD = 0.127 * Math.pow(92, (36 - awg) / 39);
-                        let strandInsulatedOD = bareOD * 1.04 + 0.015; // default approx heavy build
+                        
+                        let strandInsulatedOD;
+                        if (awgODMap[awg] !== undefined) {
+                            strandInsulatedOD = awgODMap[awg];
+                        } else {
+                            strandInsulatedOD = bareOD * 1.04 + 0.015; // default approx heavy build fallback
+                        }
                         
                         if (item.wireType && item.wireType.toUpperCase().includes('TIW')) {
                             if (tiwODMap[awg] !== undefined) {
