@@ -638,22 +638,34 @@
                         }
                     }
 
-                    let finalCalc = [];
-                    groups.forEach(grp => {
+                    let currentBuildHeight = 0;
+                    for (let i = groups.length - 1; i >= 0; i--) {
+                        let grp = groups[i];
                         let maxThick = Math.max(...grp.map(x => x.thickness));
-                        let colSpan = Math.floor(12 / grp.length); 
                         
+                        let heightToCenter = currentBuildHeight + (maxThick / 2);
+                        // Add 2*PI*r to the base MLT to account for the corner radius expansion as the stack builds up
+                        let layerMLT = bobbin.value.mlt ? (bobbin.value.mlt + (2 * Math.PI * heightToCenter)) : 0;
+                        
+                        let colSpan = Math.floor(12 / grp.length); 
                         let combinedWd = grp.filter(x => x.type === 'winding').map(x => x.computedWd).join(' & ');
 
                         grp.forEach((item, idx) => {
                             item.sharedThickness = maxThick;
+                            item.layerMLT = layerMLT;
                             item.gridSpan = colSpan;
                             item.isFirstInGroup = (idx === 0);
                             item.groupSize = grp.length;
                             item.cellWidthPercent = item.type === 'tape' ? 100 : (item.widthFill / (colSpan / 12));
                             item.displayWd = item.type === 'tape' ? '' : combinedWd;
-                            finalCalc.push(item);
                         });
+                        
+                        currentBuildHeight += maxThick;
+                    }
+                    
+                    let finalCalc = [];
+                    groups.forEach(grp => {
+                        grp.forEach(item => finalCalc.push(item));
                     });
 
                     // Sort finalCalc back to original index to ensure 1:1 mapping with windings array for the UI list
