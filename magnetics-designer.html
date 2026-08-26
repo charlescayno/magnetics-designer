@@ -872,9 +872,14 @@
                 });
 
                 const addWinding = () => {
+                    const defaultGauge = '24';
+                    const defaultType = 'AWG';
+                    const defaultOD = awgODMap[24] || 0.566;
+                    const maxTurns = Math.floor(bobbin.value.width / defaultOD);
+                    
                     windings.value.unshift({ 
                         id: Date.now(), type: 'winding', wd: 'WD', name: 'New Winding', 
-                        turns: 5, filar: 1, layers: 1, gauge: '24', wireType: 'AWG', wireOD: 0.8, color: nextColor(),
+                        turns: maxTurns, filar: 1, layers: 1, gauge: defaultGauge, wireType: defaultType, wireOD: defaultOD, color: nextColor(),
                         startPin: '', endPin: '', interleaveNext: false
                     });
                 };
