@@ -231,8 +231,15 @@
                                      height: '100%'
                                  }">
                                 
+                                <div v-if="layer.type === 'winding'" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40 overflow-hidden">
+                                    <div class="flex gap-[1px] items-center px-1" :style="{ width: '100%', height: '80%', justifyContent: layer.turns > 20 ? 'space-between' : 'center' }">
+                                        <div v-for="n in Math.min(layer.turns, 100)" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
+                                             :style="{ width: Math.min(10, (100 / Math.min(layer.turns, 100)) - 1) + 'px', height: Math.min(10, (100 / Math.min(layer.turns, 100)) - 1) + 'px' }">
+                                        </div>
+                                    </div>
+                                </div>
                                 <span v-if="layer.type === 'winding' && (layer.sharedThickness / bobbin.depth) * 100 > 3" 
-                                      class="text-[10px] font-bold text-white px-2 py-0.5 rounded truncate bg-black/20"
+                                      class="relative text-[10px] font-bold text-white px-2 py-0.5 rounded truncate bg-black/20 z-10 shadow-sm"
                                       :title="layer.name">
                                     {{ layer.name }}
                                 </span>
