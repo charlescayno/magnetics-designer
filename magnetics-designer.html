@@ -242,15 +242,15 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col flex-grow">
                     <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Bobbin Cross-Section</h2>
                     
-                    <div class="flex-grow flex items-center justify-center mt-12 relative h-[400px]">
-                        
-                        <!-- Overfill Warning Line -->
-                        <div v-if="depthUse > 100" class="absolute top-0 w-full border-t border-red-500 border-dashed z-10 pointer-events-none"></div>
-                        
-                        <!-- Bobbin Container -->
-                        <div id="visual-bobbin-stack" class="absolute inset-0 border-x-4 border-b-4 border-purple-300 rounded-b-lg bg-gray-50 overflow-visible" 
-                             style="display: grid; grid-template-columns: repeat(12, 1fr); align-content: end;"
-                             :style="{ gridTemplateRows: bobbinGridRows }">
+                    <div class="flex-grow flex items-center justify-center mt-4 relative h-[400px]">
+                        <div class="w-full h-full relative" :style="{ transform: depthUse > 100 ? 'scale(' + (100 / depthUse) + ')' : 'scale(1)', transformOrigin: 'bottom center' }">
+                            <!-- Overfill Warning Line -->
+                            <div v-if="depthUse > 100" class="absolute top-0 w-full border-t border-red-500 border-dashed z-10 pointer-events-none"></div>
+                            
+                            <!-- Bobbin Container -->
+                            <div id="visual-bobbin-stack" class="absolute inset-0 border-x-4 border-b-4 border-purple-300 rounded-b-lg bg-gray-50 overflow-visible" 
+                                 style="display: grid; grid-template-columns: repeat(12, 1fr); align-content: end;"
+                                 :style="{ gridTemplateRows: bobbinGridRows }">
                              
                             <div v-for="(layer, index) in calculatedWindings" :key="layer.id"
                                  class="relative flex items-center justify-center border-t border-gray-200 transition-all shadow-sm cursor-move"
