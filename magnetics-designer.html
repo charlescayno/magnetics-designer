@@ -120,9 +120,9 @@
                     </div>
                     
                     <!-- Table Headers -->
-                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 45px;">
+                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px;">
                         <div></div>
-                        <div class="uppercase pl-2 text-left">WD</div>
+                        <div class="uppercase pl-1 text-left">WD</div>
                         <div class="uppercase pl-1 text-left">Description</div>
                         <div class="text-center uppercase">Turns</div>
                         <div class="text-center uppercase">Filar</div>
@@ -130,6 +130,8 @@
                         <div class="text-center uppercase">Type</div>
                         <div class="text-center"><span class="uppercase">OD</span> (mm)</div>
                         <div class="text-center uppercase">RMS</div>
+                        <div class="text-center uppercase">DCR (Ω)</div>
+                        <div class="text-center uppercase">Loss (W)</div>
                         <div class="text-center uppercase">% Fill</div>
                         <div class="text-center uppercase">CMA</div>
                         <div class="flex justify-end gap-1 items-center">
@@ -152,7 +154,7 @@
                         <div v-for="(item, index) in windings" :key="item.id" 
                              class="grid gap-1 items-center bg-white border-b border-gray-200 py-0 px-1 transition group hover:bg-gray-50"
                              :class="{'border-l-4': true}"
-                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 45px' }">
+                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px' }">
                             
                             <!-- Drag Handle -->
                             <div class="cursor-grab text-gray-400 hover:text-gray-600 flex justify-center drag-handle">
@@ -193,6 +195,14 @@
                                 <div><input type="number" step="0.01" v-model.number="item.wireOD" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- RMS -->
                                 <div><input type="number" step="0.01" v-model.number="item.rms" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
+                                <!-- DCR -->
+                                <div class="text-center text-[10px] font-semibold text-gray-700" :title="'Total DCR for parallel strands'">
+                                    {{ calculateDCR(item, index) ? calculateDCR(item, index).toFixed(3) : '-' }}
+                                </div>
+                                <!-- Loss -->
+                                <div class="text-center text-[10px] font-bold text-red-600" :title="'Conduction Loss (I²R)'">
+                                    {{ calculateLoss(item, index) ? calculateLoss(item, index).toFixed(3) : '-' }}
+                                </div>
 
                                 <!-- Datalists specific to this winding -->
                                 <datalist :id="item.id + '-AWG-list'">
@@ -234,7 +244,7 @@
                                     <input type="number" step="0.01" v-model.number="item.thickness" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" title="Tape Thickness (mm)">
                                 </div>
                                 <!-- Empty Fill Column -->
-                                <div style="grid-column: span 3;"></div>
+                                <div style="grid-column: span 5;"></div>
                             </template>
 
                             <!-- Lock / Delete -->
@@ -1116,6 +1126,35 @@
                     let awg = 50 - (10 * Math.log10(cma));
                     return Math.round(awg);
                 };
+                const calculateDCR = (item, index) => {
+                    const calcItem = calculatedWindings.value[index];
+                    if (!item || item.type !== 'winding' || !calcItem || !calcItem.layerMLT) return 0;
+                    
+                    const parsed = parseLitz(item.gauge);
+                    const strandAWG = parsed.awg;
+                    const numStrands = parsed.strands;
+                    
+                    if (isNaN(strandAWG) || strandAWG <= 0) return 0;
+                    
+                    const rho = 0.01724; // Copper resistivity (Ohm*mm^2/m) at room temp
+                    const d = 0.127 * Math.pow(92, (36 - strandAWG) / 39);
+                    const area = Math.PI * Math.pow(d / 2, 2);
+                    const rPerMeter = rho / area;
+                    
+                    const lengthMeters = (item.turns * calcItem.layerMLT) / 1000;
+                    const totalParallel = (item.filar || 1) * numStrands;
+                    
+                    if (totalParallel === 0) return 0;
+                    return (lengthMeters * rPerMeter) / totalParallel;
+                };
+
+                const calculateLoss = (item, index) => {
+                    const dcr = calculateDCR(item, index);
+                    const rms = item.rms || 0;
+                    if (rms === 0 || dcr === 0) return 0;
+                    return Math.pow(rms, 2) * dcr;
+                };
+
                 return { 
                     bobbin, windings, calculatedWindings, totalHeight, depthUse, turnSummaries,
                     allLocked, toggleAllLocks, descriptionSuggestions, 
@@ -1123,7 +1162,7 @@
                     verification, calculatedAL,
                     exportJSON, exportCSV,
                     bobbinGridRows, toggleInterleave,
-                    awgOptions, tiwOptions, litzOptions, tiwLitzOptions, updateOD, calculateCMA, getGenericCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap, activeDbTab, parseLitz, getNearestAWG
+                    awgOptions, tiwOptions, litzOptions, tiwLitzOptions, updateOD, calculateCMA, getGenericCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap, activeDbTab, parseLitz, getNearestAWG, calculateDCR, calculateLoss
                 };
             }
         }).mount('#app');
