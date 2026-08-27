@@ -227,33 +227,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
                                 </button>
-                                </div> <!-- /inner colored block -->
-
-                                <!-- Start Pin -->
-                                <div v-if="layer.type === 'winding' && layer.startPin" 
-                                     class="absolute top-1/2 -translate-y-1/2 h-0 z-10" 
-                                     :style="{ 
-                                         left: \calc(-\% - 2.5rem)\, 
-                                         right: \calc(50% + \%)\, 
-                                         borderTop: '1.5px solid ' + layer.color 
-                                     }">
-                                    <span class="absolute -left-2 top-[-5px] text-[10px] font-bold bg-gray-50 pr-1 leading-none" 
-                                          :style="{ color: layer.color }">{{ layer.startPin }}</span>
-                                </div>
-
-                                <!-- End Pin -->
-                                <div v-if="layer.type === 'winding' && layer.endPin" 
-                                     class="absolute bottom-1/2 z-10 pointer-events-none" 
-                                     :style="{ 
-                                         left: \calc(-\% - 2.5rem)\, 
-                                         right: \calc(50% - \%)\, 
-                                         height: 'calc(100% + 4px)', 
-                                         borderTop: '1.5px solid ' + layer.color, 
-                                         borderRight: '1.5px solid ' + layer.color, 
-                                         borderTopRightRadius: '2px' 
-                                     }">
-                                    <span class="absolute -left-2 top-[-5px] text-[10px] font-bold bg-gray-50 pr-1 leading-none" 
-                                          :style="{ color: layer.color }">{{ layer.endPin }}</span>
                                 </div>
                             </div>
                         </div>
@@ -338,14 +311,13 @@
                                         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                </div> <!-- /inner colored block -->
-
+                                
                                 <!-- Start Pin -->
                                 <div v-if="layer.type === 'winding' && layer.startPin" 
                                      class="absolute top-1/2 -translate-y-1/2 h-0 z-10" 
                                      :style="{ 
-                                         left: \calc(-\% - 2.5rem)\, 
-                                         right: \calc(50% + \%)\, 
+                                         left: 'calc(-' + (layer.groupIndex * 100) + '% - 2.5rem)', 
+                                         right: 'calc(50% + ' + (Math.min(100, layer.cellWidthPercent) / 2) + '%)', 
                                          borderTop: '1.5px solid ' + layer.color 
                                      }">
                                     <span class="absolute -left-2 top-[-5px] text-[10px] font-bold bg-gray-50 pr-1 leading-none" 
@@ -356,8 +328,8 @@
                                 <div v-if="layer.type === 'winding' && layer.endPin" 
                                      class="absolute bottom-1/2 z-10 pointer-events-none" 
                                      :style="{ 
-                                         left: \calc(-\% - 2.5rem)\, 
-                                         right: \calc(50% - \%)\, 
+                                         left: 'calc(-' + (layer.groupIndex * 100) + '% - 2.5rem)', 
+                                         right: 'calc(50% - ' + (Math.min(100, layer.cellWidthPercent) / 2) + '%)', 
                                          height: 'calc(100% + 4px)', 
                                          borderTop: '1.5px solid ' + layer.color, 
                                          borderRight: '1.5px solid ' + layer.color, 
@@ -366,6 +338,9 @@
                                     <span class="absolute -left-2 top-[-5px] text-[10px] font-bold bg-gray-50 pr-1 leading-none" 
                                           :style="{ color: layer.color }">{{ layer.endPin }}</span>
                                 </div>
+                                
+                                </div> <!-- /inner colored block -->
+
                             </div>
                         </div>
                     </div>
