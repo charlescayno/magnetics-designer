@@ -726,9 +726,13 @@
                         
                         let colSpan = Math.floor(12 / grp.length); 
                         let combinedWd = grp.filter(x => x.type === 'winding').map(x => x.computedWd).join(' & ');
+                        
+                        let totalWidthUsed = grp.reduce((sum, it) => sum + (it.widthUsed || 0), 0);
+                        let sharedWidthFill = (totalWidthUsed / bobbin.value.width) * 100;
 
                         grp.forEach((item, idx) => {
                             item.sharedThickness = maxThick;
+                            item.sharedWidthFill = sharedWidthFill;
                             item.layerMLT = layerMLT;
                             item.gridSpan = colSpan;
                             item.isFirstInGroup = (idx === 0);
