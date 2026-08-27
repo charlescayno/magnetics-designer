@@ -265,6 +265,13 @@
                              :class="depthUse > 105 ? 'bg-red-500' : 'bg-green-500'" 
                              :style="{width: Math.min(depthUse, 100) + '%'}"></div>
                     </div>
+                    
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 border-t border-gray-100 pt-2" v-if="turnSummaries && turnSummaries.length > 0">
+                        <div v-for="summary in turnSummaries" :key="summary.name" class="flex items-baseline gap-1">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">N_{{ summary.name }}:</span>
+                            <span class="text-xs font-bold text-gray-800">{{ summary.turns }}</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Visualization Card -->
@@ -913,6 +920,38 @@
 
                 const depthUse = computed(() => (totalHeight.value / bobbin.value.depth) * 100);
 
+                const turnSummaries = computed(() => {
+                    const groups = {};
+                    for (const w of windings.value) {
+                        if (w.type !== 'winding') continue;
+                        const name = (w.name || '').trim().toLowerCase();
+                        if (!name) continue;
+                        
+                        let category = 'Other';
+                        if (name.includes('shield')) category = 'shield';
+                        else if (name.includes('pri') && name.includes('bias')) category = 'primary bias';
+                        else if (name.includes('sec') && name.includes('bias')) category = 'secondary bias';
+                        else if (name.includes('pri')) category = 'primary';
+                        else if (name.includes('sec')) category = 'secondary';
+                        else category = w.name.trim().toLowerCase();
+
+                        groups[category] = (groups[category] || 0) + (w.turns || 0);
+                    }
+                    
+                    const order = ['primary', 'secondary', 'primary bias', 'secondary bias', 'shield'];
+                    return Object.keys(groups).map(k => ({
+                        name: k,
+                        turns: groups[k]
+                    })).sort((a, b) => {
+                        let idxA = order.indexOf(a.name);
+                        let idxB = order.indexOf(b.name);
+                        if (idxA === -1) idxA = 99;
+                        if (idxB === -1) idxB = 99;
+                        if (idxA !== idxB) return idxA - idxB;
+                        return a.name.localeCompare(b.name);
+                    });
+                });
+
                 const toggleInterleave = (index) => {
                     windings.value[index].interleaveNext = !windings.value[index].interleaveNext;
                 };
@@ -1032,7 +1071,7 @@
                     return Math.round(awg);
                 };
                 return { 
-                    bobbin, windings, calculatedWindings, totalHeight, depthUse, 
+                    bobbin, windings, calculatedWindings, totalHeight, depthUse, turnSummaries, 
                     addWinding, addTape, remove, isGaugeUnder95Fill,
                     verification, calculatedAL,
                     exportJSON, exportCSV,
