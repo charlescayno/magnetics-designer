@@ -122,8 +122,8 @@
                     <!-- Table Headers -->
                     <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px minmax(0, 1.5fr) minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 45px;">
                         <div></div>
-                        <div class="text-center uppercase pl-4">WD</div>
-                        <div class="uppercase">Description</div>
+                        <div class="uppercase pl-2 text-left">WD</div>
+                        <div class="uppercase pl-1 text-left">Description</div>
                         <div class="text-center uppercase">Turns</div>
                         <div class="text-center uppercase">Filar</div>
                         <div class="text-center uppercase">Gauge</div>
@@ -132,21 +132,17 @@
                         <div class="text-center uppercase">RMS</div>
                         <div class="text-center uppercase">% Fill</div>
                         <div class="text-center uppercase">CMA</div>
-                        <div class="text-right uppercase flex justify-end gap-1">
-                            <div class="flex flex-col items-center">
-                                <button @click="toggleAllLocks" class="text-gray-400 hover:text-gray-600 transition-colors" :title="allLocked ? 'Unlock All' : 'Lock All'">
-                                    <svg v-if="allLocked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <span class="text-transparent selection:bg-transparent" style="font-size: 0px">Del</span>
-                            </div>
-                            <div class="flex flex-col items-center">
-                                <span class="text-transparent selection:bg-transparent" style="font-size: 0px">Lock</span>
-                                <span>Del</span>
+                        <div class="flex justify-end gap-1 items-center">
+                            <button @click="toggleAllLocks" class="flex items-center justify-center w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" :title="allLocked ? 'Unlock All' : 'Lock All'">
+                                <svg v-if="allLocked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                            <div class="flex items-center justify-center w-4 h-4 text-[10px] font-bold text-gray-500 uppercase">
+                                DEL
                             </div>
                         </div>
                     </div>
@@ -167,9 +163,9 @@
 
                             <template v-if="item.type === 'winding'">
                                 <!-- WD & Color -->
-                                <div class="flex items-center justify-start gap-1 overflow-hidden min-w-0">
+                                <div class="flex items-center justify-start gap-1 overflow-hidden min-w-0 pl-2">
                                     <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Winding Color">
-                                    <div class="text-center font-bold text-[10px] text-gray-600 truncate">
+                                    <div class="font-bold text-[10px] text-gray-600 truncate">
                                         {{ calculatedWindings[index].displayWd }}
                                     </div>
                                 </div>
@@ -243,7 +239,7 @@
 
                             <!-- Lock / Delete -->
                             <div class="flex justify-end gap-1 items-center">
-                                <button @click="item.locked = !item.locked" class="text-gray-400 hover:text-gray-600 transition cursor-pointer">
+                                <button @click="item.locked = !item.locked" class="flex items-center justify-center w-4 h-4 text-gray-400 hover:text-gray-600 transition cursor-pointer">
                                     <svg v-if="item.locked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                                       <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                                     </svg>
@@ -251,7 +247,7 @@
                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                                     </svg>
                                 </button>
-                                <button @click="!item.locked && remove(index)" class="flex justify-center items-center w-full h-full text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
+                                <button @click="!item.locked && remove(index)" class="flex justify-center items-center w-4 h-4 text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
