@@ -82,6 +82,7 @@
                 <div class="flex gap-2">
                     <button @click="exportCSV" class="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition shadow-sm">Export CSV</button>
                     <button @click="exportJSON" class="px-3 py-1 bg-gray-800 text-white text-xs font-semibold rounded hover:bg-gray-900 transition shadow-sm">Export JSON</button>
+                    <a href="#wire-database" class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition shadow-sm flex items-center justify-center">View Wire Database</a>
                 </div>
             </div>
             <div class="flex gap-4 items-center bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
@@ -474,7 +475,7 @@
     </div>
 
     
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
+        <div id="wire-database" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
             <div class="bg-slate-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                 <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
