@@ -54,6 +54,9 @@
 </head>
 <body class="bg-gray-100 text-gray-800 p-4 md:p-8 font-sans min-h-screen">
     <div id="app" class="max-w-[1400px] mx-auto flex flex-col gap-6">
+        <datalist id="desc-suggestions">
+            <option v-for="sug in descriptionSuggestions" :key="sug" :value="sug"></option>
+        </datalist>
         <datalist id="presetColors">
             <option>#ef4444</option> <!-- red -->
             <option>#3b82f6</option> <!-- blue -->
@@ -964,6 +967,27 @@
                     });
                 });
 
+                const descriptionSuggestions = computed(() => {
+                    const counts = { 'Primary': 0, 'Secondary': 0, 'Primary Bias': 0, 'Shield': 0, 'Secondary Bias': 0 };
+                    windings.value.forEach(w => {
+                        if (w.type !== 'winding') return;
+                        const name = (w.name || '').toLowerCase();
+                        if (name.includes('shield')) counts['Shield']++;
+                        else if (name.includes('pri') && name.includes('bias')) counts['Primary Bias']++;
+                        else if (name.includes('sec') && name.includes('bias')) counts['Secondary Bias']++;
+                        else if (name.includes('pri') || name.includes('primary')) counts['Primary']++;
+                        else if (name.includes('sec') || name.includes('secondary')) counts['Secondary']++;
+                    });
+                    
+                    return [
+                        counts['Primary'] > 0 ? `Primary ${counts['Primary'] + 1}` : 'Primary',
+                        counts['Secondary'] > 0 ? `Secondary ${counts['Secondary'] + 1}` : 'Secondary',
+                        counts['Primary Bias'] > 0 ? `Primary Bias ${counts['Primary Bias'] + 1}` : 'Primary Bias',
+                        counts['Shield'] > 0 ? `Shield ${counts['Shield'] + 1}` : 'Shield',
+                        counts['Secondary Bias'] > 0 ? `Secondary Bias ${counts['Secondary Bias'] + 1}` : 'Secondary Bias'
+                    ];
+                });
+
                 const allLocked = computed(() => windings.value.length > 0 && windings.value.every(w => w.locked));
 
                 const toggleAllLocks = () => {
@@ -1091,7 +1115,7 @@
                 };
                 return { 
                     bobbin, windings, calculatedWindings, totalHeight, depthUse, turnSummaries,
-                    allLocked, toggleAllLocks, 
+                    allLocked, toggleAllLocks, descriptionSuggestions, 
                     addWinding, addTape, remove, isGaugeUnder95Fill,
                     verification, calculatedAL,
                     exportJSON, exportCSV,
