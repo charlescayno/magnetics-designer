@@ -163,7 +163,16 @@
                                 <!-- Gauge -->
                                 <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.id + '-' + item.wireType + '-list' : item.id + '-AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
                                 <!-- Wire Type -->
-                                <div><input type="text" v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" list="type-list" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="Type"></div>
+                                <div>
+                                    <select v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" @change="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300 appearance-none text-center-select text-ellipsis" style="text-align-last: center;">
+                                        <option value="AWG">AWG</option>
+                                        <option value="TIW">TIW</option>
+                                        <option value="Served TIW">Served TIW</option>
+                                        <option value="Litz">Litz</option>
+                                        <option value="Served Litz">Served Litz</option>
+                                        <option value="TIW Litz">TIW Litz</option>
+                                    </select>
+                                </div>
                                 <!-- Wire OD -->
                                 <div><input type="number" step="0.01" v-model.number="item.wireOD" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- RMS -->
