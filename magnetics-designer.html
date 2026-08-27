@@ -284,11 +284,7 @@
                                      height: '100%'
                                  }">
                                 
-                                <div v-if="layer.type === 'winding'" class="absolute inset-0 flex items-center justify-between pointer-events-none opacity-40 overflow-hidden">
-                                    <div v-for="n in (Math.floor(Math.min((layer.turns || 0) * (layer.filar || 1), 100)) || 0)" :key="'circle-'+n" class="rounded-full bg-white border border-black/20 shrink-0"
-                                         :style="{ width: (100 / (Math.floor(Math.min((layer.turns || 0) * (layer.filar || 1), 100)) || 1)) + '%', aspectRatio: '1 / 1' }">
-                                    </div>
-                                </div>
+
                                 <span v-if="layer.type === 'winding' && (layer.sharedThickness / bobbin.depth) * 100 > 3" 
                                       class="relative text-[10px] font-bold text-white px-2 py-0.5 rounded truncate bg-black/20 z-10 shadow-sm"
                                       :title="layer.name">
