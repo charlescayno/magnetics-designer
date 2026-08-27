@@ -76,410 +76,163 @@
         <header class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div class="flex flex-col gap-2">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Magnetics Winding Designer</h1>
-                    <p class="text-sm text-gray-500 mt-1">Design and visualize your transformer stack-up</p>
+                    <h1 class="text-2xl font-bold text-gray-900">Wire Database</h1>
+                    <p class="text-sm text-gray-500 mt-1">Reference and manage wire ODs</p>
                 </div>
                 <div class="flex gap-2">
-                    <button @click="exportCSV" class="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition shadow-sm">Export CSV</button>
-                    <button @click="exportJSON" class="px-3 py-1 bg-gray-800 text-white text-xs font-semibold rounded hover:bg-gray-900 transition shadow-sm">Export JSON</button>
-                    <a href="wire-database.html" target="_blank" class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition shadow-sm flex items-center justify-center">View Wire Database</a>
-                </div>
-            </div>
-            <div class="flex gap-4 items-center bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-                <div class="text-sm flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase">Winding Area</span>
-                    <span class="font-bold text-blue-700 text-lg">{{ (bobbin.width * bobbin.depth).toFixed(2) }} <span class="text-xs text-gray-500 font-normal">mm²</span></span>
-                </div>
-                <div class="w-px h-8 bg-gray-300 mx-1"></div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin Width</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.width" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
-                </div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin Height</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.depth" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
-                </div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin MLT</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.mlt" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
+                    <a href="magnetics-designer.html" class="px-3 py-1 bg-gray-600 text-white text-xs font-semibold rounded hover:bg-gray-700 transition shadow-sm flex items-center justify-center">Back to Designer</a>
                 </div>
             </div>
         </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            
-            <!-- Left Column: Winding List -->
-            <div class="lg:col-span-3 flex flex-col gap-4">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-bold text-gray-800">Winding Stack-Up</h2>
-                        <div class="flex gap-2">
-                            <button @click="addTape" class="px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded hover:bg-yellow-600 transition">+ Add Tape</button>
-                            <button @click="addWinding" class="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition">+ Add Winding</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Table Headers -->
-                    <div class="grid gap-1 px-1 py-1 text-[10px] font-bold text-gray-500 border-b border-gray-200 mb-1 items-center" style="grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px;">
-                        <div></div>
-                        <div class="uppercase pl-1 text-left">WD</div>
-                        <div class="uppercase pl-1 text-left">Description</div>
-                        <div class="text-center uppercase">Turns</div>
-                        <div class="text-center uppercase">Filar</div>
-                        <div class="text-center uppercase">Gauge</div>
-                        <div class="text-center uppercase">Type</div>
-                        <div class="text-center"><span class="uppercase">OD</span> (mm)</div>
-                        <div class="text-center uppercase">RMS (A)</div>
-                        <div class="text-center uppercase">DCR (Ω)</div>
-                        <div class="text-center uppercase">Loss (W)</div>
-                        <div class="text-center uppercase">% Fill</div>
-                        <div class="text-center uppercase">CMA</div>
-                        <div class="flex justify-end gap-1 items-center">
-                            <button @click="toggleAllLocks" class="flex items-center justify-center w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" :title="allLocked ? 'Unlock All' : 'Lock All'">
-                                <svg v-if="allLocked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                                </svg>
-                            </button>
-                            <div class="flex items-center justify-center w-4 h-4 text-[10px] font-bold text-gray-500 uppercase">
-                                DEL
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Draggable List -->
-                    <div id="winding-list" class="flex flex-col gap-0 border-t border-l border-r border-gray-200 rounded-lg overflow-hidden">
-                        <div v-for="(item, index) in windings" :key="item.id" 
-                             class="grid gap-1 items-center bg-white border-b border-gray-200 py-0 px-1 transition group hover:bg-gray-50"
-                             :class="{'border-l-4': true}"
-                             :style="{ borderLeftColor: item.type === 'winding' ? item.color : '#eab308', gridTemplateColumns: '24px minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 45px' }">
-                            
-                            <!-- Drag Handle -->
-                            <div class="cursor-grab text-gray-400 hover:text-gray-600 flex justify-center drag-handle">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </div>
-
-                            <template v-if="item.type === 'winding'">
-                                <!-- WD & Color -->
-                                <div class="flex items-center justify-start gap-1 overflow-hidden min-w-0 pl-2">
-                                    <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Winding Color">
-                                    <div class="font-bold text-[10px] text-gray-600 truncate">
-                                        {{ calculatedWindings[index].displayWd }}
-                                    </div>
-                                </div>
-                                <!-- Name -->
-                                <div class="min-w-0"><input type="text" v-model="item.name" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] font-semibold focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="e.g. Primary"></div>
-                                <!-- Pins Removed -->
-                                <!-- Turns -->
-                                <div><input type="number" v-model.number="item.turns" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
-                                <!-- Filar -->
-                                <div><input type="number" min="1" v-model.number="item.filar" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
-                                <!-- Gauge -->
-                                <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.id + '-' + item.wireType + '-list' : item.id + '-AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
-                                <!-- Wire Type -->
-                                <div>
-                                    <select v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" @change="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300 appearance-none text-center-select text-ellipsis" style="text-align-last: center;">
-                                        <option value="AWG">AWG</option>
-                                        <option value="TIW">TIW</option>
-                                        <option value="Served TIW">Served TIW</option>
-                                        <option value="Litz">Litz</option>
-                                        <option value="Served Litz">Served Litz</option>
-                                        <option value="TIW Litz">TIW Litz</option>
-                                    </select>
-                                </div>
-                                <!-- Wire OD -->
-                                <div><input type="number" step="0.01" v-model.number="item.wireOD" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
-                                <!-- RMS -->
-                                <div><input type="number" step="0.01" v-model.number="item.rms" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
-                                <!-- DCR -->
-                                <div class="text-center text-[10px] font-semibold text-gray-700" :title="'Total DCR for parallel strands'">
-                                    {{ calculateDCR(item, index) ? calculateDCR(item, index).toFixed(3) : '-' }}
-                                </div>
-                                <!-- Loss -->
-                                <div class="text-center text-[10px] font-bold text-red-600" :title="'Conduction Loss (I²R)'">
-                                    {{ calculateLoss(item, index) ? calculateLoss(item, index).toFixed(3) : '-' }}
-                                </div>
-
-                                <!-- Datalists specific to this winding -->
-                                <datalist :id="item.id + '-AWG-list'">
-                                    <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'AWG') ? '? ' : '') + (awgODMap[awg] ? awgODMap[awg] + ' mm' : '') }}</option>
-                                </datalist>
-                                <datalist :id="item.id + '-TIW-list'">
-                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
-                                </datalist>
-                                <datalist :id="item.id + '-Served TIW-list'">
-                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'Served TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
-                                </datalist>
-                                <datalist :id="item.id + '-Litz-list'">
-                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
-                                </datalist>
-                                <datalist :id="item.id + '-Served Litz-list'">
-                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Served Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
-                                </datalist>
-                                <datalist :id="item.id + '-TIW Litz-list'">
-                                    <option v-for="litz in tiwLitzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'TIW Litz') ? '? ' : '') + (tiwLitzODMap[litz] ? tiwLitzODMap[litz] + ' mm' : '') }}</option>
-                                </datalist>
-                                <!-- Width Fill -->
-                                <div class="text-center text-[11px] font-semibold" :class="calculatedWindings[index].sharedWidthFill > 95 ? 'text-red-600' : 'text-green-600'">
-                                    {{ Math.round(calculatedWindings[index].sharedWidthFill) }}%
-                                </div>
-                                <!-- CMA -->
-                                <div class="text-center text-[11px] font-semibold" :class="calculateCMA(item) < 200 ? 'text-red-600' : 'text-green-600'" title="Calculated CMA">
-                                    {{ calculateCMA(item) }}
-                                </div>
-                            </template>
-
-                            <template v-else-if="item.type === 'tape'">
-                                <!-- Tape Name -->
-                                <div class="flex items-center gap-1 font-medium text-gray-700 pl-2 text-xs" style="grid-column: span 6;">
-                                    <input type="color" v-model="item.color" list="presetColors" class="color-input shrink-0" title="Change Tape Color">
-                                    {{ item.name }}
-                                </div>
-                                <!-- Tape Thickness Input (Aligned with OD) -->
-                                <div style="grid-column: span 1;">
-                                    <input type="number" step="0.01" v-model.number="item.thickness" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" title="Tape Thickness (mm)">
-                                </div>
-                                <!-- Empty Fill Column -->
-                                <div style="grid-column: span 5;"></div>
-                            </template>
-
-                            <!-- Lock / Delete -->
-                            <div class="flex justify-end gap-1 items-center">
-                                <button @click="item.locked = !item.locked" class="flex items-center justify-center w-4 h-4 text-gray-400 hover:text-gray-600 transition cursor-pointer">
-                                    <svg v-if="item.locked" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                      <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                                <button @click="!item.locked && remove(index)" class="flex justify-center items-center w-4 h-4 text-gray-400 transition cursor-pointer" :class="item.locked ? 'opacity-20 cursor-not-allowed' : 'hover:text-red-500'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-xs text-gray-500">
-                        * Drag items by the handle (≡) to reorder the stack. Bottom of list = inner winding (closest to core), Top of list = outer winding.
-                    </div>
-                </div>
-
-                <!-- Wire Length Estimator Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-4">
-                    <h2 class="text-lg font-bold text-gray-800 border-b pb-2">Wire Length Estimator</h2>
-                    
-                    <div class="flex flex-col gap-1">
-                        <div class="grid grid-cols-12 gap-2 px-1 pb-2 text-[10px] font-bold text-gray-500 uppercase border-b border-gray-100 mb-1">
-                            <div class="col-span-5">Winding</div>
-                            <div class="col-span-2 text-center">Turns</div>
-                            <div class="col-span-2 text-center">Filar</div>
-                            <div class="col-span-3 text-center">Est. Length (m)</div>
-                        </div>
-                        <template v-for="(item, index) in calculatedWindings" :key="'length-'+index">
-                            <div v-if="item.type === 'winding'" class="grid grid-cols-12 gap-2 items-center bg-gray-50 border border-gray-200 rounded p-1">
-                                <div class="col-span-5 pl-1 text-xs font-semibold text-gray-700 truncate" :title="item.name">
-                                    {{ item.name }}
-                                </div>
-                                <div class="col-span-2 text-center text-xs text-gray-600">
-                                    {{ item.turns }}
-                                </div>
-                                <div class="col-span-2 text-center text-xs text-gray-600">
-                                    {{ item.filar }}
-                                </div>
-                                <div class="col-span-3 text-center text-xs font-bold text-blue-700">
-                                    <span v-if="bobbin.mlt" :title="'Layer MLT: ' + (item.layerMLT || 0).toFixed(2) + ' mm'">{{ ((item.turns * item.filar * item.layerMLT) / 1000).toFixed(2) }}</span>
-                                    <span v-else class="text-gray-400 font-normal">Set MLT</span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- Electrical Verification Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-4">
-                    <h2 class="text-lg font-bold text-gray-800 border-b pb-2">Electrical Verification</h2>
-                    
-                    <div class="grid grid-cols-4 gap-4 mb-2">
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Lp (uH)</label>
-                            <input type="number" step="0.1" v-model.number="verification.Lp" class="mt-1 w-full bg-gray-50 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Leakage L (uH)</label>
-                            <div class="relative mt-1 w-full">
-                                <input type="number" step="0.1" v-model.number="verification.leakage" class="w-full bg-gray-50 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500 pr-12">
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-xs font-bold" :class="(verification.leakage / verification.Lp * 100) > 5 ? 'text-red-500' : 'text-green-600'">
-                                    {{ (verification.leakage / verification.Lp * 100).toFixed(1) }}%
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Np (Actual Turns)</label>
-                            <input type="number" v-model.number="verification.Np" class="mt-1 w-full bg-gray-50 border border-gray-300 rounded px-2 py-1 text-sm focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div class="flex flex-col justify-end pb-1">
-                            <span class="text-[10px] font-bold text-gray-500 uppercase">Calculated A<sub class="lowercase text-[8px]">L</sub></span>
-                            <span class="text-sm font-bold text-blue-700">{{ calculatedAL.toFixed(1) }} nH/T²</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-3">
-                        <div class="grid grid-cols-12 gap-2 px-1 pb-2 text-[10px] font-bold text-gray-500 uppercase border-b border-gray-100 mb-2">
-                            <div class="col-span-4">Winding Group</div>
-                            <div class="col-span-5 text-center">Input Mode & Value</div>
-                            <div class="col-span-2 text-right">Calculated</div>
-                            <div class="col-span-1 text-right"></div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <div v-for="(v, idx) in verification.others" :key="idx" class="grid grid-cols-12 gap-2 items-center">
-                                <div class="col-span-4">
-                                    <input type="text" v-model="v.name" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div class="col-span-5 flex gap-1">
-                                    <select v-model="v.mode" class="w-2/5 bg-white border border-gray-300 rounded px-1 py-1 text-xs focus:ring-blue-500 focus:border-blue-500">
-                                        <option value="turns">Turns</option>
-                                        <option value="inductance">L (uH)</option>
-                                    </select>
-                                    <input type="number" step="0.1" v-model.number="v.val" class="w-3/5 text-center bg-white border border-gray-300 rounded px-2 py-1 text-xs focus:ring-blue-500 focus:border-blue-500">
-                                </div>
-                                <div class="col-span-2 text-right text-sm font-semibold text-gray-700">
-                                    <span v-if="v.mode === 'turns'" class="text-blue-600">
-                                        {{ ((verification.Lp / (verification.Np * verification.Np)) * (v.val * v.val)).toFixed(2) }} uH
-                                    </span>
-                                    <span v-else class="text-green-600">
-                                        {{ Math.sqrt(v.val / (verification.Lp / (verification.Np * verification.Np))).toFixed(2) }} Turns
-                                    </span>
-                                </div>
-                                <div class="col-span-1 flex justify-end">
-                                    <button @click="verification.others.splice(idx, 1)" class="text-gray-400 hover:text-red-500 p-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <button @click="verification.others.push({name: 'New Winding', mode: 'turns', val: 5})" class="mt-3 text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                            <span>+ Add Group</span>
-                        </button>
-                    </div>
-                </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-6">
+            <div class="bg-slate-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                    Wire Database
+                </h2>
+                <div class="text-xs text-gray-500">Available drop down options and OD references</div>
             </div>
-
-            <!-- Right Column: Visualization & Summary -->
-            <div class="lg:col-span-2 flex flex-col gap-4">
-                
-                <!-- Summary Card -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 flex flex-col gap-2">
-                    <div class="flex justify-between items-end">
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-xs text-gray-500 font-medium">Total Height:</span>
-                            <span class="text-sm font-bold text-gray-900">{{ totalHeight.toFixed(3) }} <span class="font-normal text-gray-500">mm</span></span>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-xs text-gray-500 font-medium">Bobbin Fill:</span>
-                            <span class="text-sm font-bold" :class="depthUse > 105 ? 'text-red-600' : 'text-green-600'">{{ depthUse.toFixed(1) }}%</span>
-                        </div>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-1.5">
-                        <div class="h-1.5 rounded-full transition-all duration-300" 
-                             :class="depthUse > 105 ? 'bg-red-500' : 'bg-green-500'" 
-                             :style="{width: Math.min(depthUse, 100) + '%'}"></div>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 border-t border-gray-100 pt-2" v-if="turnSummaries && turnSummaries.length > 0">
-                        <div v-for="summary in turnSummaries" :key="summary.name" class="flex items-baseline gap-1">
-                            <span class="text-[10px] text-gray-500 font-bold uppercase">N_{{ summary.name }}:</span>
-                            <span class="text-xs font-bold text-gray-800">{{ summary.turns }}</span>
-                        </div>
-                    </div>
+            <div class="p-0">
+                <!-- Tabs -->
+                <div class="flex border-b border-gray-200 overflow-x-auto">
+                    <button @click="activeDbTab = 'AWG'" :class="activeDbTab === 'AWG' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Solid AWG</button>
+                    <button @click="activeDbTab = 'TIW'" :class="activeDbTab === 'TIW' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Solid TIW</button>
+                    <button @click="activeDbTab = 'Litz'" :class="activeDbTab === 'Litz' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Served Litz Wire</button>
+                    <button @click="activeDbTab = 'TIWLitz'" :class="activeDbTab === 'TIWLitz' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-semibold text-sm whitespace-nowrap transition-colors">Served TIW Litz Wire</button>
                 </div>
-
-                <!-- Visualization Card -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 py-6 flex flex-col flex-grow">
-                    <h2 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 px-6">Bobbin Cross-Section</h2>
-                    
-                    <div class="flex-1 flex items-center justify-center mt-4 relative min-h-[300px]">
-                        <div class="w-full h-full relative" :style="{ transform: depthUse > 100 ? 'scale(' + (100 / depthUse) + ')' : 'scale(1)', transformOrigin: 'bottom center' }">
-                            <!-- Overfill Warning Line -->
-                            <div v-if="depthUse > 100" class="absolute top-0 w-full border-t border-red-500 border-dashed z-10 pointer-events-none"></div>
-                            
-                            <!-- Bobbin Container -->
-                            <div id="visual-bobbin-stack" class="absolute inset-0 border-x-4 border-b-4 border-purple-300 rounded-b-lg bg-gray-50 overflow-visible" 
-                                 style="display: grid; grid-template-columns: repeat(12, 1fr); align-content: end;"
-                                 :style="{ gridTemplateRows: bobbinGridRows }">
-                             
-                            <div v-for="(layer, index) in calculatedWindings" :key="layer.id"
-                                 class="relative flex items-center justify-center border-t border-gray-200 transition-all shadow-sm cursor-move"
-                                 :class="layer.type === 'tape' ? 'bg-[repeating-linear-gradient(45deg,transparent,transparent_4px,rgba(0,0,0,0.1)_4px,rgba(0,0,0,0.1)_8px)]' : ''"
-                                 :style="{
-                                     gridColumn: `span ${layer.gridSpan}`,
-                                     width: layer.type === 'tape' ? '100%' : `${Math.min(100, layer.cellWidthPercent)}%`,
-                                     justifySelf: 'end',
-                                     backgroundColor: layer.type === 'winding' ? layer.color : '#fef08a',
-                                     opacity: layer.type === 'winding' ? 0.8 : 1,
-                                     height: '100%'
-                                 }">
-                                
-
-                                <span v-if="layer.type === 'winding' && (layer.sharedThickness / bobbin.depth) * 100 > 3" 
-                                      class="relative text-[10px] font-bold text-white px-2 py-0.5 rounded truncate bg-black/20 z-10 shadow-sm"
-                                      :title="layer.name">
-                                    {{ layer.name }}
-                                </span>
-
-                                <!-- Interleave Toggle Button -->
-                                <button v-if="layer.type === 'winding' && index < calculatedWindings.length - 1 && calculatedWindings[index+1].type === 'winding'"
-                                        @click.stop="toggleInterleave(layer.originalIndex)"
-                                        class="absolute z-20 w-4 h-4 rounded-full bg-white border flex items-center justify-center cursor-pointer shadow hover:bg-gray-100"
-                                        :class="layer.interleaveNext 
-                                            ? '-right-2 top-1/2 -translate-y-1/2 border-blue-400 text-blue-600' 
-                                            : '-bottom-2 left-1/2 -translate-x-1/2 border-gray-400 text-gray-400'"
-                                        title="Toggle Interleave">
-                                    <svg v-if="layer.interleaveNext" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
+                
+                <div class="p-6">
+                    <!-- AWG -->
+                    <div v-show="activeDbTab === 'AWG'">
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">AWG</h3>
+                        <div class="border border-gray-200 rounded text-sm">
+                            <table class="excel-table">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, awg) in awgODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(awg) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(3) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="number" id="newAwgG" placeholder="AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newAwgOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="awgODMap[document.getElementById('newAwgG').value] = parseFloat(document.getElementById('newAwgOD').value); document.getElementById('newAwgG').value=''; document.getElementById('newAwgOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
                         </div>
                     </div>
+
+                    <!-- TIW -->
+                    <div v-show="activeDbTab === 'TIW'">
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">TIW / Served TIW</h3>
+                        <div class="border border-gray-200 rounded text-sm">
+                            <table class="excel-table">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, awg) in tiwODMap" :key="awg" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(awg) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(3) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="number" id="newTiwG" placeholder="AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newTiwOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="tiwODMap[document.getElementById('newTiwG').value] = parseFloat(document.getElementById('newTiwOD').value); document.getElementById('newTiwG').value=''; document.getElementById('newTiwOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Litz -->
+                    <div v-show="activeDbTab === 'Litz'">
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served Litz</h3>
+                        <div class="border border-gray-200 rounded text-sm">
+                            <table class="excel-table">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Number of<br>Strands</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Nearest AWG<br>Equiv.<br>(Cir Mils)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, litz) in litzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(4) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="text" id="newLitzG" placeholder="Strands/#AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newLitzOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="litzODMap[document.getElementById('newLitzG').value] = parseFloat(document.getElementById('newLitzOD').value); document.getElementById('newLitzG').value=''; document.getElementById('newLitzOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <!-- TIW Litz -->
+                    <div v-show="activeDbTab === 'TIWLitz'">
+                        <h3 class="font-bold text-sm text-gray-700 mb-3 uppercase tracking-wider">Served TIW Litz</h3>
+                        <div class="border border-gray-200 rounded text-sm">
+                            <table class="excel-table">
+                                <thead class="bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Number of<br>Strands</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Size (AWG)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">CM</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">Nearest AWG<br>Equiv.<br>(Cir Mils)</th>
+                                        <th class="p-2 border-b font-bold text-center border-r border-gray-200">OD (in)</th>
+                                        <th class="p-2 border-b font-bold text-center">OD (mm)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(od, litz) in tiwLitzODMap" :key="litz" class="border-b last:border-0 hover:bg-gray-50 text-center font-medium">
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).strands }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ parseLitz(litz).awg }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getGenericCMA(litz) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ getNearestAWG(getGenericCMA(litz)) }}</td>
+                                        <td class="p-2 border-r border-gray-200">{{ ((od || 0) / 25.4).toFixed(3) }}</td>
+                                        <td class="p-2">{{ (od || 0).toFixed(5) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <input type="text" id="newTiwLitzG" placeholder="Strands/#AWG" class="w-1/2 p-1 border rounded text-xs" />
+                            <input type="number" step="0.001" id="newTiwLitzOD" placeholder="OD" class="w-1/2 p-1 border rounded text-xs" />
+                            <button @click="tiwLitzODMap[document.getElementById('newTiwLitzG').value] = parseFloat(document.getElementById('newTiwLitzOD').value); document.getElementById('newTiwLitzG').value=''; document.getElementById('newTiwLitzOD').value=''" class="bg-indigo-500 text-white px-2 py-1 rounded text-xs font-bold">+</button>
+                        </div>
+                    </div>
+
                 </div>
-
-                
-                        
-
-                
-                
-                        
-
-
-
             </div>
         </div>
-        
-        <!-- Datalists for inputs -->
-        
-
-        <datalist id="type-list">
-            <option value="AWG"></option>
-            <option value="TIW"></option>
-            <option value="Served TIW"></option>
-            <option value="Litz"></option>
-            <option value="Served Litz"></option>
-            <option value="TIW Litz"></option>
-        </datalist>
-
-    </div>
-
     </div>
       <script>
         const { createApp, ref, reactive, computed, onMounted, watch } = Vue;
