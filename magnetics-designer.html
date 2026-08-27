@@ -202,7 +202,7 @@
                                     {{ Math.round(calculatedWindings[index].sharedWidthFill) }}%
                                 </div>
                                 <!-- CMA -->
-                                <div class="text-center text-[11px] font-semibold" :class="calculateCMA(item) < 200 ? 'text-red-600' : 'text-blue-700'" title="Calculated CMA">
+                                <div class="text-center text-[11px] font-semibold" :class="calculateCMA(item) < 200 ? 'text-red-600' : 'text-green-600'" title="Calculated CMA">
                                     {{ calculateCMA(item) }}
                                 </div>
                             </template>
