@@ -224,7 +224,7 @@
                                     <option v-for="litz in tiwLitzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'TIW Litz') ? '? ' : '') + (tiwLitzODMap[litz] ? tiwLitzODMap[litz] + ' mm' : '') }}</option>
                                 </datalist>
                                 <!-- Width Fill -->
-                                <div class="text-center text-[11px] font-semibold" :style="{ color: calculatedWindings[index].sharedWidthFill > 95 ? '#dc2626' : item.color }">
+                                <div class="text-center text-[11px] font-semibold" :class="calculatedWindings[index].sharedWidthFill > 95 ? 'text-red-600' : 'text-green-600'">
                                     {{ Math.round(calculatedWindings[index].sharedWidthFill) }}%
                                 </div>
                                 <!-- CMA -->
