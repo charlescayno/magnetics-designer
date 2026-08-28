@@ -181,7 +181,13 @@
                                 <!-- Filar -->
                                 <div><input type="number" min="1" v-model.number="item.filar" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300"></div>
                                 <!-- Gauge -->
-                                <div><input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.id + '-' + item.wireType + '-list' : item.id + '-AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG"></div>
+                                <div class="relative group flex items-center">
+                                    <input type="text" v-model="item.gauge" :disabled="item.locked" :class="{'opacity-50': item.locked}" :list="item.wireType ? item.id + '-' + item.wireType + '-list' : item.id + '-AWG-list'" @input="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded pl-1 pr-3 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="AWG">
+                                    <div class="absolute right-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity mr-[1px]" v-if="!item.locked">
+                                        <button @click.prevent="cycleGauge(item, 1)" class="h-[10px] w-3 text-[6px] text-gray-400 hover:text-gray-800 hover:bg-gray-200 flex items-center justify-center leading-none rounded-t-sm focus:outline-none cursor-pointer" tabindex="-1">&#9650;</button>
+                                        <button @click.prevent="cycleGauge(item, -1)" class="h-[10px] w-3 text-[6px] text-gray-400 hover:text-gray-800 hover:bg-gray-200 flex items-center justify-center leading-none rounded-b-sm focus:outline-none cursor-pointer" tabindex="-1">&#9660;</button>
+                                    </div>
+                                </div>
                                 <!-- Wire Type -->
                                 <div>
                                     <select v-model="item.wireType" :disabled="item.locked" :class="{'opacity-50': item.locked}" @change="updateOD(item)" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[10px] focus:bg-white focus:border-blue-500 hover:border-gray-300 appearance-none text-center-select text-ellipsis" style="text-align-last: center;">
@@ -791,6 +797,35 @@
                     }
                 };
 
+                const cycleGauge = (item, direction) => {
+                    if (item.locked) return;
+                    
+                    let options = [];
+                    const wireType = item.wireType || 'AWG';
+                    
+                    if (wireType.includes('AWG')) options = awgOptions;
+                    else if (wireType.includes('TIW') && !wireType.includes('Litz')) options = tiwOptions;
+                    else if (wireType.includes('Litz') && !wireType.includes('TIW')) options = litzOptions;
+                    else if (wireType.includes('TIW Litz')) options = tiwLitzOptions.value;
+                    
+                    const opts = Array.isArray(options) ? options : (options.value || []);
+                    if (opts.length === 0) return;
+                    
+                    const currentIndex = opts.findIndex(o => String(o) === String(item.gauge));
+                    let newIndex;
+                    
+                    if (currentIndex === -1) {
+                        newIndex = direction > 0 ? 0 : opts.length - 1;
+                    } else {
+                        newIndex = currentIndex + direction;
+                        if (newIndex < 0) newIndex = 0;
+                        if (newIndex >= opts.length) newIndex = opts.length - 1;
+                    }
+                    
+                    item.gauge = opts[newIndex];
+                    updateOD(item);
+                };
+
                 
                 
                 const getGenericCMA = (gaugeString) => {
@@ -1056,7 +1091,7 @@
                     verification, calculatedAL,
                     exportJSON, exportCSV,
                     bobbinGridRows, toggleInterleave,
-                    awgOptions, tiwOptions, litzOptions, tiwLitzOptions, updateOD, calculateCMA, getGenericCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap, activeDbTab, parseLitz, getNearestAWG, calculateDCR, calculateLoss
+                    awgOptions, tiwOptions, litzOptions, tiwLitzOptions, updateOD, cycleGauge, calculateCMA, getGenericCMA, awgODMap, tiwODMap, litzODMap, tiwLitzODMap, activeDbTab, parseLitz, getNearestAWG, calculateDCR, calculateLoss
                 };
             }
         }).mount('#app');
