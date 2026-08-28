@@ -482,39 +482,6 @@
 
             </div>
         </div>
-        
-        <header class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div class="flex flex-col gap-2">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Magnetics Winding Designer</h1>
-                    <p class="text-sm text-gray-500 mt-1">Design and visualize your transformer stack-up</p>
-                </div>
-                <div class="flex gap-2">
-                    <button @click="exportCSV" class="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition shadow-sm">Export CSV</button>
-                    <button @click="exportJSON" class="px-3 py-1 bg-gray-800 text-white text-xs font-semibold rounded hover:bg-gray-900 transition shadow-sm">Export JSON</button>
-                    <a href="wire-database.html" class="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition shadow-sm flex items-center justify-center">View Wire Database</a>
-                </div>
-            </div>
-            <div class="flex gap-4 items-center bg-gray-50 px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-                <div class="text-sm flex flex-col justify-center">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase">Winding Area</span>
-                    <span class="font-bold text-blue-700 text-lg">{{ (bobbin.width * bobbin.depth).toFixed(2) }} <span class="text-xs text-gray-500 font-normal">mm²</span></span>
-                </div>
-                <div class="w-px h-8 bg-gray-300 mx-1"></div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin Width</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.width" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
-                </div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin Height</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.depth" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
-                </div>
-                <div class="text-sm flex flex-col">
-                    <label class="text-[10px] font-bold text-gray-500"><span class="uppercase">Bobbin MLT</span> (mm)</label>
-                    <input type="number" v-model.number="bobbin.mlt" class="border border-gray-300 rounded px-2 py-1 w-20 text-sm focus:ring-blue-500 focus:border-blue-500" step="0.1">
-                </div>
-            </div>
-        </header>
 
         <!-- Datalists for inputs -->
         
