@@ -132,7 +132,7 @@
                         <div class="text-center uppercase">Type</div>
                         <div class="text-center"><span class="uppercase">OD</span> (mm)</div>
                         <div class="text-center uppercase">RMS (A)</div>
-                        <div class="text-center uppercase">DCR (Ω)</div>
+                        <div class="text-center uppercase">DCR (m&Omega;)</div>
                         <div class="text-center uppercase">Loss (W)</div>
                         <div class="text-center uppercase">% Fill</div>
                         <div class="text-center uppercase">CMA</div>
@@ -199,7 +199,7 @@
                                 <div><input type="number" step="0.01" v-model.number="item.rms" :disabled="item.locked" :class="{'opacity-50': item.locked}" class="w-full text-center bg-transparent border border-transparent rounded px-1 py-0 h-6 text-[11px] focus:bg-white focus:border-blue-500 hover:border-gray-300" placeholder="0.0"></div>
                                 <!-- DCR -->
                                 <div class="text-center text-[10px] font-semibold text-gray-700" :title="'Total DCR for parallel strands'">
-                                    {{ calculateDCR(item, index) ? calculateDCR(item, index).toFixed(3) : '-' }}
+                                    {{ calculateDCR(item, index) ? (calculateDCR(item, index) * 1000).toFixed(1) : '-' }}
                                 </div>
                                 <!-- Loss -->
                                 <div class="text-center text-[10px] font-bold text-red-600" :title="'Conduction Loss (I²R)'">
