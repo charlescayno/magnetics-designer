@@ -208,22 +208,22 @@
 
                                 <!-- Datalists specific to this winding -->
                                 <datalist :id="item.id + '-AWG-list'">
-                                    <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'AWG') ? '? ' : '') + (awgODMap[awg] ? awgODMap[awg] + ' mm' : '') }}</option>
+                                    <option v-for="awg in awgOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'AWG') ? '✓ ' : '') + (awgODMap[awg] ? awgODMap[awg] + ' mm' : '') }}</option>
                                 </datalist>
                                 <datalist :id="item.id + '-TIW-list'">
-                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
+                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'TIW') ? '✓ ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
                                 </datalist>
                                 <datalist :id="item.id + '-Served TIW-list'">
-                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'Served TIW') ? '? ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
+                                    <option v-for="awg in tiwOptions" :key="awg" :value="awg">{{ (isGaugeUnder95Fill(item, awg, 'Served TIW') ? '✓ ' : '') + (tiwODMap[awg] ? tiwODMap[awg] + ' mm' : '') }}</option>
                                 </datalist>
                                 <datalist :id="item.id + '-Litz-list'">
-                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
+                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Litz') ? '✓ ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
                                 </datalist>
                                 <datalist :id="item.id + '-Served Litz-list'">
-                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Served Litz') ? '? ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
+                                    <option v-for="litz in litzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'Served Litz') ? '✓ ' : '') + (litzODMap[litz] ? litzODMap[litz] + ' mm' : '') }}</option>
                                 </datalist>
                                 <datalist :id="item.id + '-TIW Litz-list'">
-                                    <option v-for="litz in tiwLitzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'TIW Litz') ? '? ' : '') + (tiwLitzODMap[litz] ? tiwLitzODMap[litz] + ' mm' : '') }}</option>
+                                    <option v-for="litz in tiwLitzOptions" :key="litz" :value="litz">{{ (isGaugeUnder95Fill(item, litz, 'TIW Litz') ? '✓ ' : '') + (tiwLitzODMap[litz] ? tiwLitzODMap[litz] + ' mm' : '') }}</option>
                                 </datalist>
                                 <!-- Width Fill -->
                                 <div class="text-center text-[11px] font-semibold" :class="calculatedWindings[index].sharedWidthFill > 95 ? 'text-red-600' : 'text-green-600'">
