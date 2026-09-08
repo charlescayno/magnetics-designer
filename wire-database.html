@@ -244,7 +244,7 @@
             setup() {
                 const activeDbTab = ref("AWG");
                 // Initialize default states
-                let initialBobbin = { width: 20.8, depth: 7.05, mlt: 65.0 };
+                let initialBobbin = { width: 9.0, depth: 5.2, mlt: 65.0 };
                 let initialWindings = [
                     { id: 13, type: 'tape', name: 'Tape', thickness: 0.05, color: '#eab308', locked: false },
                     { id: 12, type: 'winding', wd: 'WD2', name: 'Sec (1T)', turns: 1, filar: 2, layers: 1, gauge: '120/#38', wireType: 'Served TIW', wireOD: 1.75, rms: 10.291, color: '#3b82f6', startPin: '--', endPin: '12' },
@@ -267,7 +267,13 @@
                 if (savedConfig) {
                     try {
                         const parsed = JSON.parse(savedConfig);
-                        if (parsed.bobbin) initialBobbin = parsed.bobbin;
+                        if (parsed.bobbin) {
+                            if (parsed.bobbin.width === 20.8 && parsed.bobbin.depth === 7.05) {
+                                parsed.bobbin.width = 9.0;
+                                parsed.bobbin.depth = 5.2;
+                            }
+                            initialBobbin = parsed.bobbin;
+                        }
                         if (parsed.windings) initialWindings = parsed.windings;
                         if (parsed.verification) savedVerification = parsed.verification;
                     } catch (e) {
